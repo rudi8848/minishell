@@ -2,17 +2,25 @@
 #include "get_next_line.h"
 #include <stdio.h>
 
+#define CLEAR "\e[1;1H\e[2J"
+
 int	main(int argc, char *argv[], char *envp[])
 {
+	char *user;
+	char *curdir;
 	char *line;
 	int ret = 1;
 	char **command;
 	pid_t pid;
 	int status = 1;
+ft_printf("%s", CLEAR);
 
+	user = get_env("USERNAME", envp);
+	curdir = get_env("PWD", envp);
 	while (ret > 0)
 	{
-		write(1, "###> ", 5);
+		ft_printf("[%s][%s]> ", user, curdir);
+		//write(1, "###> ", 5);
 		ret = get_next_line(1, &line);
 		command = parser(line, envp);
 	printf("---> %s\n", __FUNCTION__);	

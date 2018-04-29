@@ -2,7 +2,7 @@
 
 char	*get_env(char *needle, char **envp)
 {
-	printf("---> %s\n", __FUNCTION__);
+//	printf("---> %s\n", __FUNCTION__);
 	char	*res;
 	size_t	len;
 
@@ -27,7 +27,7 @@ char	*get_env(char *needle, char **envp)
 
 char	*ft_find(char *name, char **envp)
 {
-	printf("---> %s\n", __FUNCTION__);
+//	printf("---> %s\n", __FUNCTION__);
 	int	find;
 	char	*valid_command = NULL;
 	char	**path_arr;
@@ -40,10 +40,10 @@ char	*ft_find(char *name, char **envp)
 		path_arr = ft_strsplit(env_path, ':');
 		while (*path_arr != NULL)
 		{
-			printf("--> %s: loop\n", __FUNCTION__);
+	//		printf("--> %s: loop\n", __FUNCTION__);
 			tmp = ft_strjoin(*path_arr, "/");
 			find = access(ft_strcat(tmp, name), X_OK);
-			printf("%s\n", tmp);
+	//		printf("%s\n", tmp);
 			if (find == 0)
 			{
 			//	printf("OK\n");
@@ -65,7 +65,7 @@ char	*ft_find(char *name, char **envp)
 
 char	**parser(char *line, char **envp)
 {
-	printf("---> %s, line: %s\n", __FUNCTION__, line);
+//	printf("---> %s, line: %s\n", __FUNCTION__, line);
 	char	**command;
 if (ft_strlen(line) > 1)
 {
