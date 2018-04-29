@@ -1,6 +1,6 @@
 NAME = minishell
-#SRCS = minishell.c get_next_line.c
-SRCS = test.c
+SRCS = minishell.c get_next_line.c parser.c
+#SRCS = test.c
 LIB = libft/libft.a
 OBJ = $(SRCS:.c=.o)
 FLAGS = -Wall -Wextra -Werror -g3
@@ -11,7 +11,7 @@ $(NAME): $(OBJ) $(LIB)
 	gcc -o $(NAME) $(FLAGS) $(OBJ) -L. $(LIB)
 
 $(OBJ):	$(SRCS) $(LIB)
-	gcc -c $(SRCS)
+	gcc -c $(SRCS) -g3
 
 $(LIB):
 	make -C libft

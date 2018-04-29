@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 #include "libft/includes/libft.h"
+#include "libft/includes/ft_printf.h"
 #include <unistd.h>		//fork, execve, chdir,access, getcwd
 #include <signal.h>		//signal, kill
 #include <sys/types.h>		//wait, fork
@@ -11,5 +12,9 @@
 #include <stdlib.h>		//exit
 #include <errno.h>
 
+
+char	**parser(char *line, char **envp);
+char	*ft_find(char *name, char **envp);
+char	*get_env(char *needle, char **envp);
 
 #endif
