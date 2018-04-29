@@ -14,10 +14,12 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		write(1, "###> ", 5);
 		ret = get_next_line(1, &line);
-	if (ret > 0)	
 		command = parser(line, envp);
-		
+	printf("---> %s\n", __FUNCTION__);	
 		free(line);
+		
+		if (command)
+		{
 		pid = fork();
 		
 		if (pid < 0)
@@ -28,7 +30,7 @@ int	main(int argc, char *argv[], char *envp[])
 		
 		else if (pid == 0)
 		{
-			printf("CHILD: %d\n", getpid());
+//			printf("CHILD: %d\n", getpid());
 			status = execve(command[0], command, NULL);
 			if (command[0] && status < 0)
 				printf("%s: command not found\n", command[0]);
@@ -37,8 +39,9 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		else
 		{
-			printf("PARENT: %d\n", getpid());
+//			printf("PARENT: %d\n", getpid());
 			wait(&status);
+		}
 		}
 	}
 	return (0);

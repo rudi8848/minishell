@@ -2,6 +2,7 @@
 
 char	*get_env(char *needle, char **envp)
 {
+	printf("---> %s\n", __FUNCTION__);
 	char	*res;
 	size_t	len;
 
@@ -11,7 +12,7 @@ char	*get_env(char *needle, char **envp)
 		if (ft_strnequ(needle, *envp, len))
 		{
 			res = ft_strsub(*envp, len + 1, ft_strlen(*envp));
-			printf("%s: %s\n", __FUNCTION__, res);
+			//printf("%s: %s\n", __FUNCTION__, res);
 			return (res);
 		}
 		envp++;
@@ -39,11 +40,13 @@ char	*ft_find(char *name, char **envp)
 		path_arr = ft_strsplit(env_path, ':');
 		while (*path_arr != NULL)
 		{
+			printf("--> %s: loop\n", __FUNCTION__);
 			tmp = ft_strjoin(*path_arr, "/");
 			find = access(ft_strcat(tmp, name), X_OK);
+			printf("%s\n", tmp);
 			if (find == 0)
 			{
-				printf("OK\n");
+			//	printf("OK\n");
 				valid_command = tmp;
 			return (valid_command);
 			}
@@ -55,17 +58,20 @@ char	*ft_find(char *name, char **envp)
 	if (!valid_command)
 	{
 		ft_printf("Command %s: not found\n", name);
-		exit (0);
+		return (NULL);
 	}
 	return (valid_command);
 }
 
 char	**parser(char *line, char **envp)
 {
-	printf("---> %s\n", __FUNCTION__);
+	printf("---> %s, line: %s\n", __FUNCTION__, line);
 	char	**command;
-
+if (ft_strlen(line) > 1)
+{
 	command = ft_strsplit(line, ' ');
+
+	/*
 	int i = 0;
 	int ok = 0;
 	while (*command[i])
@@ -81,8 +87,11 @@ char	**parser(char *line, char **envp)
 		ft_printf("Error: cannot parse command\n");
 		exit(0);
 	}
-	if (ok)
+	if (ok)*/
 		command[0] = ft_find(command[0], envp);
-	printf("%s, %s\n", __FUNCTION__, command[0]);
+//	printf("%s, %s\n", __FUNCTION__, command[0]);
+if (command[0])
 	return (command);
+}
+return (NULL);
 }
