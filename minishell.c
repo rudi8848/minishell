@@ -3,11 +3,18 @@
 #include <stdio.h>
 
 #define CLEAR "\e[1;1H\e[2J"
-
-int	main(int argc, char *argv[], char *envp[])
+void	type_prompt(char **envp)
 {
 	char *user;
 	char *curdir;
+	user = get_env("LOGNAME", envp);
+	curdir = get_env("PWD", envp);
+		ft_printf("[%s][%s]> ", user, curdir);
+
+}
+
+int	main(int argc, char *argv[], char *envp[])
+{
 	char *line;
 	int ret = 1;
 	char **command;
@@ -15,15 +22,12 @@ int	main(int argc, char *argv[], char *envp[])
 	int status = 1;
 ft_printf("%s", CLEAR);
 
-	user = get_env("USERNAME", envp);
-	curdir = get_env("PWD", envp);
 	while (ret > 0)
 	{
-		ft_printf("[%s][%s]> ", user, curdir);
+		type_prompt(envp);
 		//write(1, "###> ", 5);
 		ret = get_next_line(1, &line);
 		command = parser(line, envp);
-	printf("---> %s\n", __FUNCTION__);	
 		free(line);
 		
 		if (command)
@@ -52,5 +56,6 @@ ft_printf("%s", CLEAR);
 		}
 		}
 	}
+	ft_printf("\n");
 	return (0);
 }
