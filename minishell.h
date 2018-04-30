@@ -12,9 +12,15 @@
 #include <stdlib.h>		//exit
 #include <errno.h>
 
+typedef	(int*)t_pfb(char*, char**);
+
+typedef enum {
+	CD,
+	BUILT
+} t_built;
 
 char	**parser(char *line, char **envp);
 char	*ft_find(char *name, char **envp);
 char	*get_env(char *needle, char **envp);
-
+int	ft_cd(char *path, char**envp);
 #endif
