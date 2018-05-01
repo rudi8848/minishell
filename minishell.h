@@ -12,14 +12,20 @@
 #include <stdlib.h>		//exit
 #include <errno.h>
 
-typedef	(int*)t_pfb(char*, char**);
+//typedef	(int*)t_pfb(char*, char**);
 
 typedef enum {
 	CD,
 	BUILT
 } t_built;
 
-char	**parser(char *line, char **envp);
+typedef struct s_cmd_list
+{
+	char **argv;
+	struct s_cmd_list *next;
+} t_cmd_list;
+
+char	**parser(char *line/*, char **envp*/);
 char	*ft_find(char *name, char **envp);
 char	*get_env(char *needle, char **envp);
 int	ft_cd(char *path, char**envp);

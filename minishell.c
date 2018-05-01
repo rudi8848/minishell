@@ -64,11 +64,13 @@ void	executor(char **command, char **envp)
 	}
 }
 
+
 int	main(int argc, char *argv[], char *envp[])
 {
 	char *line;
 	int ret = 1;
-	char **command;
+//char **command;
+	t_cmd_list *commands;
 //	pid_t pid;
 //	int status = 1;
 	ft_printf("%s", CLEAR);
@@ -78,10 +80,15 @@ int	main(int argc, char *argv[], char *envp[])
 		type_prompt(envp);
 		//write(1, "###> ", 5);
 		ret = get_next_line(1, &line);
-		command = parser(line, envp);
+
+		
+		//command = parser(line, envp);
+		commands = parser(line);
 		free(line);
-	if (command)
-		executor(command, envp);
+	if (commands)
+		executor(commands, envp);
+		printf("%s\n", line);
 	ft_printf("\n");
+}
 	return (0);
 }

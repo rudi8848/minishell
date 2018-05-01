@@ -63,10 +63,10 @@ char	*ft_find(char *name, char **envp)
 	return (valid_command);
 }
 
-char	**parser(char *line, char **envp)
+char	**parser(char *line)
 {
 //	printf("---> %s, line: %s\n", __FUNCTION__, line);
-	char	**command;
+	//char	**command;
 if (ft_strlen(line) > 1)
 {
 	command = ft_strsplit(line, ' ');
@@ -90,8 +90,8 @@ if (ft_strlen(line) > 1)
 	if (ok)*/
 		command[0] = ft_find(command[0], envp);
 //	printf("%s, %s\n", __FUNCTION__, command[0]);
-if (command[0])
-	return (command);
+if (commands)
+	return (commands);
 }
 return (NULL);
 }
