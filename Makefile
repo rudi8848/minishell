@@ -7,7 +7,7 @@ FLAGS = -Wall -Wextra -Werror -g3
 
 all:	$(NAME)
 
-$(NAME): $(OBJ) $(LIB)
+$(NAME): $(OBJ) $(LIB) *.h
 	gcc -o $(NAME) $(FLAGS) $(OBJ) -L. $(LIB)
 
 $(OBJ):	$(SRCS) $(LIB)

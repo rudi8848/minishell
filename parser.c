@@ -102,41 +102,60 @@ void	push(t_cmd_list **head, char **args)
 	(*head) = tmp;
 }
 
+int		ft_valid_str(char *str)
+{
+	int i;
+	int val;
+
+	i = 0;
+	val = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
+			val++;
+		i++;
+	}
+	return (val);
+}
+
 t_cmd_list		*parser(char *line)
 {
 	t_cmd_list	*commands = NULL;
 	char		*ptr;
 	char		**args;
 	char		*tmp;
-
-	if ((ptr = ft_strchr(line, ';')))
+	if (ft_valid_str(line))
 	{
-		int i = 0;
-		while (line[i] != ';')
-			i++;
-		ptr = ft_strsub(line, 0, i);
-		args = ft_strsplit(ptr, ' ');
-		push(&commands, args);
-		ptr = line;
-		while (*ptr && ptr != NULL)
+		if ((ptr = ft_strchr(line, ';')))
 		{
-			i = 0;
-
-			ptr = ft_strchr(ptr, ';') + 1;
-			while (ptr[i] && ptr[i] != ';')
+			int i = 0;
+			while (line[i] != ';')
 				i++;
-			tmp = ft_strsub(ptr, 0, i);
+			ptr = ft_strsub(line, 0, i);
 			args = ft_strsplit(ptr, ' ');
-			push_back(commands, args);		
-			ptr += i;
+			push(&commands, args);
+			ptr = line;
+			while (*ptr && ptr != NULL)
+			{
+				i = 0;
+
+				ptr = ft_strchr(ptr, ';') + 1;
+				while (ptr[i] && ptr[i] != ';')
+					i++;
+				tmp = ft_strsub(ptr, 0, i);
+				printf(">%s\n", tmp);
+				args = ft_strsplit(tmp, ' ');
+				push_back(commands, args);		
+				ptr += i;
+			}
+		}
+		else
+		{
+			
+			args = ft_strsplit(line, ' ');
+			push(&commands, args);
 		}
 	}
-	else
-	{
-		args = ft_strsplit(line, ' ');
-		push(&commands, args);
-	}
-	
 	if (commands)
 		return (commands);
 	return (NULL);

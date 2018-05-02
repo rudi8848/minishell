@@ -2,10 +2,7 @@
 #include "get_next_line.h"
 #include <stdio.h>
 
-#define CLEAR "\e[1;1H\e[2J"
-#define RESET "\033[0m"
-#define GREEN "\033[1;32m"
-#define RED "\033[1;31m"
+
 
 void	type_prompt(char **envp)
 {
@@ -30,26 +27,44 @@ void	type_prompt(char **envp)
 }
 
 int	check_built(char *cmd)
-{/*
+{
 	int i = 0;
-	t_pfb	f_built;
-	t_prb arr_built[BUILT] = {ft_cd};
-	char **built = {"cd", NULL};
-	while (built[i] != NULL)
+	char *built[] = {"echo", "cd", "setenv", "unsetenv", "env", "exit", NULL};
+	while (built[i])
 	{
 		if (ft_strequ(cmd, built[i]))
-		{
-			f_built = &arr_built[i];
-			f_built(cmd, envp);
 			return (i);
-		}
 		i++;
-	}*/
-	return (0);
+	}
+	return (-1);
 }
-void ft_built_exe(char **args, char **envp)
+
+void	ft_set_builtins(t_pfb *built_tab)
 {
-	;
+	built_tab[ECHO] = &ft_echo;
+	built_tab[CD] = &ft_cd;
+	built_tab[SETENV] = &ft_setenv;
+	built_tab[UNSETENV] = &ft_unsetenv;
+	built_tab[ENV] = &ft_env;
+	built_tab[EXIT] = &ft_exit;
+}
+
+void ft_built_exe(char **args, char **envp, t_built cmd)
+{
+	static t_pfb	*built_tab = NULL;
+	t_pfb			ft_run;
+	if (!built_tab)
+	{
+		built_tab = (t_pfb*)ft_memalloc(sizeof(t_pfb) * BUILT);
+		if (!built_tab)
+		{
+			ft_printf("Error\n");
+			return;
+		}
+		ft_set_builtins(built_tab);
+	}
+	ft_run = built_tab[cmd];
+	ft_run(args, envp);
 }
 
 void ft_cmd_exe(char **args, char **envp)
@@ -80,8 +95,8 @@ void	executor(t_cmd_list *commands, char **envp)
 	while (commands)
 	{
 	ret = check_built(commands->args[0]);
-	if (ret)
-		ft_built_exe(commands->args, envp);
+	if (ret >= 0)
+		ft_built_exe(commands->args, envp, ret);
 	else
 	{
 		ret = ft_find(commands, envp);
@@ -110,7 +125,7 @@ int	main(int argc, char *argv[], char *envp[])
 		free(line);
 	if (commands)
 		executor(commands, envp);
-	ft_printf("\n");
+	//ft_printf("\n");
 }
 	return (0);
 }
