@@ -63,35 +63,75 @@ char	*ft_find(char *name, char **envp)
 	return (valid_command);
 }
 
-char	**parser(char *line)
+t_cmd_list	*get_last(t_cmd_list *head)
 {
-//	printf("---> %s, line: %s\n", __FUNCTION__, line);
-	//char	**command;
-if (ft_strlen(line) > 1)
-{
-	command = ft_strsplit(line, ' ');
-
-	/*
-	int i = 0;
-	int ok = 0;
-	while (*command[i])
+	printf("---> %s\n", __FUNCTION__);
+	if (head == NULL)
 	{
-		printf("in loop %c\n", *command[i]);
-		if (ft_isalnum(*command[i]))
-			ok++;
-		i++;
-		printf("%d, %d\n", ok, i);
+		head = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
+		if (!head)
+			return (NULL);
+		return (head);
 	}
-	if (!command)
-	{
-		ft_printf("Error: cannot parse command\n");
-		exit(0);
-	}
-	if (ok)*/
-		command[0] = ft_find(command[0], envp);
-//	printf("%s, %s\n", __FUNCTION__, command[0]);
-if (commands)
-	return (commands);
+	while (head->next)
+		head = head->next;
+	return (head);
 }
-return (NULL);
+
+void	push_back(t_cmd_list *head, char **args)
+{
+	printf("---> %s\n", __FUNCTION__);
+	t_cmd_list	*last;
+	t_cmd_list	*tmp;
+
+	last = get_last(head);
+	tmp = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
+	tmp->args = args;
+	tmp->next = NULL;
+	last->next = tmp;
+}
+
+void	push(t_cmd_list **head, char **args)
+{
+	printf("---> %s\n", __FUNCTION__);
+	t_cmd_list	*tmp;
+
+	tmp = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
+	tmp->args = args;
+	tmp->next = (*head);
+	(*head) = tmp;
+}
+
+t_cmd_list		*parser(char *line)
+{
+	t_cmd_list	*commands = NULL;
+	char		*ptr;
+	char		**args;
+	char		*tmp;
+
+	if ((ptr = ft_strchr(line, ';')))
+	{
+		int i = 0;
+		while (line[i] != ';')
+			i++;
+		ptr = ft_strsub(line, 0, i);
+		args = ft_strsplit(ptr, ' ');
+		push(&commands, args);
+		ptr = line;
+		while (*ptr && ptr != NULL)
+		{
+			i = 0;
+
+			ptr = ft_strchr(ptr, ';') + 1;
+			while (ptr[i] && ptr[i] != ';')
+				i++;
+			tmp = ft_strsub(ptr, 0, i);
+			args = ft_strsplit(ptr, ' ');
+			push_back(commands, args);		
+			ptr += i;
+		}
+	}
+	if (commands)
+		return (commands);
+	return (NULL);
 }

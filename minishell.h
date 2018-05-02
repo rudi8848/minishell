@@ -21,11 +21,11 @@ typedef enum {
 
 typedef struct s_cmd_list
 {
-	char **argv;
+	char **args;
 	struct s_cmd_list *next;
 } t_cmd_list;
 
-char	**parser(char *line/*, char **envp*/);
+t_cmd_list *parser(char *line/*, char **envp*/);
 char	*ft_find(char *name, char **envp);
 char	*get_env(char *needle, char **envp);
 int	ft_cd(char *path, char**envp);

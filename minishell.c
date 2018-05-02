@@ -28,7 +28,7 @@ void	type_prompt(char **envp)
 		ft_printf("%s%s: %s%s%s>%s ", RED,user,GREEN, home, pwd, RESET);
 
 }
-
+/*
 int	check_built(char *cmd, char **envp)
 {
 	int i = 0;
@@ -64,15 +64,14 @@ void	executor(char **command, char **envp)
 	}
 }
 
-
+*/
 int	main(int argc, char *argv[], char *envp[])
 {
 	char *line;
 	int ret = 1;
 //char **command;
 	t_cmd_list *commands;
-//	pid_t pid;
-//	int status = 1;
+
 	ft_printf("%s", CLEAR);
 
 	while (ret > 0)
@@ -86,8 +85,13 @@ int	main(int argc, char *argv[], char *envp[])
 		commands = parser(line);
 		free(line);
 	if (commands)
-		executor(commands, envp);
-		printf("%s\n", line);
+		//executor(commands, envp);
+		while (commands)
+		{
+			printf("%s\n", commands->args[0]);
+			commands = commands->next;
+		}
+		
 	ft_printf("\n");
 }
 	return (0);
