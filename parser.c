@@ -25,7 +25,7 @@ char	*get_env(char *needle, char **envp)
 	return (res);
 }
 
-char	*ft_find(char *name, char **envp)
+int		ft_find(t_cmd_list *commands, char **envp)
 {
 //	printf("---> %s\n", __FUNCTION__);
 	int	find;
@@ -34,7 +34,7 @@ char	*ft_find(char *name, char **envp)
 	char	*env_path;
 	char	*tmp;
 
-	if ((find = access(name, F_OK)) != 0)
+	if ((find = access(commands->args[0], F_OK)) != 0)
 	{
 		env_path = get_env("PATH", envp);
 		path_arr = ft_strsplit(env_path, ':');
@@ -42,30 +42,30 @@ char	*ft_find(char *name, char **envp)
 		{
 	//		printf("--> %s: loop\n", __FUNCTION__);
 			tmp = ft_strjoin(*path_arr, "/");
-			find = access(ft_strcat(tmp, name), X_OK);
-	//		printf("%s\n", tmp);
+			find = access(ft_strcat(tmp, commands->args[0]), X_OK);
+			//printf("%s\n", tmp);
 			if (find == 0)
 			{
-			//	printf("OK\n");
-				valid_command = tmp;
-			return (valid_command);
+				//printf("OK\n");
+				commands->args[0] = tmp;
+			return (1);
 			}
 			path_arr++;
 		}
 	}
-	else
-		valid_command = name;
+	/*else
+		valid_command = commands->args[0];*/
 	if (!valid_command)
 	{
-		ft_printf("Command %s: not found\n", name);
-		return (NULL);
+		ft_printf("Command %s: not found\n", commands->args[0]);
+		return (0);
 	}
-	return (valid_command);
+	return (1);
 }
 
 t_cmd_list	*get_last(t_cmd_list *head)
 {
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 	if (head == NULL)
 	{
 		head = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
@@ -80,7 +80,7 @@ t_cmd_list	*get_last(t_cmd_list *head)
 
 void	push_back(t_cmd_list *head, char **args)
 {
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 	t_cmd_list	*last;
 	t_cmd_list	*tmp;
 
@@ -93,7 +93,7 @@ void	push_back(t_cmd_list *head, char **args)
 
 void	push(t_cmd_list **head, char **args)
 {
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 	t_cmd_list	*tmp;
 
 	tmp = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
@@ -131,6 +131,12 @@ t_cmd_list		*parser(char *line)
 			ptr += i;
 		}
 	}
+	else
+	{
+		args = ft_strsplit(line, ' ');
+		push(&commands, args);
+	}
+	
 	if (commands)
 		return (commands);
 	return (NULL);

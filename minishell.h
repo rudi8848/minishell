@@ -26,7 +26,7 @@ typedef struct s_cmd_list
 } t_cmd_list;
 
 t_cmd_list *parser(char *line/*, char **envp*/);
-char	*ft_find(char *name, char **envp);
+int		ft_find(t_cmd_list *cmd, char **envp);
 char	*get_env(char *needle, char **envp);
 int	ft_cd(char *path, char**envp);
 #endif

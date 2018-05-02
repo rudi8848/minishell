@@ -28,9 +28,9 @@ void	type_prompt(char **envp)
 		ft_printf("%s%s: %s%s%s>%s ", RED,user,GREEN, home, pwd, RESET);
 
 }
-/*
-int	check_built(char *cmd, char **envp)
-{
+
+int	check_built(char *cmd)
+{/*
 	int i = 0;
 	t_pfb	f_built;
 	t_prb arr_built[BUILT] = {ft_cd};
@@ -44,32 +44,59 @@ int	check_built(char *cmd, char **envp)
 			return (i);
 		}
 		i++;
-	}
+	}*/
 	return (0);
 }
-
-
-void	executor(char **command, char **envp)
+void ft_built_exe(char **args, char **envp)
 {
-	int ret;
-
-	ret = check_built(command[0], envp);
-	if (ret)
-		ft_built_exe(command, envp);
-	else
-	{
-		ret = find(command[0], envp);
-		if (ret)
-			ft_cmd_exe(command, envp);
-	}
+	;
 }
 
-*/
+void ft_cmd_exe(char **args, char **envp)
+{
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		ft_printf("Error");
+		exit(0);
+	}
+	else if (pid == 0)
+	{
+		status = execve(args[0], args, envp);
+		if (args[0] && status < 0)
+			ft_printf("%s: command not found", args[0]);
+		exit (0);
+	}
+	else
+		wait(&status);
+}
+
+void	executor(t_cmd_list *commands, char **envp)
+{
+	int ret;
+	while (commands)
+	{
+	ret = check_built(commands->args[0]);
+	if (ret)
+		ft_built_exe(commands->args, envp);
+	else
+	{
+		ret = ft_find(commands, envp);
+		if (ret)
+			ft_cmd_exe(commands->args, envp);
+	}
+	commands = commands->next;
+}
+}
+
+
 int	main(int argc, char *argv[], char *envp[])
 {
 	char *line;
 	int ret = 1;
-//char **command;
 	t_cmd_list *commands;
 
 	ft_printf("%s", CLEAR);
@@ -79,19 +106,10 @@ int	main(int argc, char *argv[], char *envp[])
 		type_prompt(envp);
 		//write(1, "###> ", 5);
 		ret = get_next_line(1, &line);
-
-		
-		//command = parser(line, envp);
 		commands = parser(line);
 		free(line);
 	if (commands)
-		//executor(commands, envp);
-		while (commands)
-		{
-			printf("%s\n", commands->args[0]);
-			commands = commands->next;
-		}
-		
+		executor(commands, envp);
 	ft_printf("\n");
 }
 	return (0);
