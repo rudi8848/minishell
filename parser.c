@@ -27,13 +27,15 @@ char	*get_env(char *needle, char **envp)
 
 int		ft_find(t_cmd_list *commands, char **envp)
 {
-//	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s, %s\n", __FUNCTION__, commands->args[0]);
 	int	find;
-	char	*valid_command = NULL;
+	//char	*valid_command = NULL;
 	char	**path_arr;
 	char	*env_path;
 	char	*tmp;
 
+	if (!commands->args[0])
+		return (0);
 	if ((find = access(commands->args[0], F_OK)) != 0)
 	{
 		env_path = get_env("PATH", envp);
@@ -52,14 +54,10 @@ int		ft_find(t_cmd_list *commands, char **envp)
 			}
 			path_arr++;
 		}
-	}
-	/*else
-		valid_command = commands->args[0];*/
-	if (!valid_command)
-	{
 		ft_printf("Command %s: not found\n", commands->args[0]);
 		return (0);
 	}
+	else
 	return (1);
 }
 

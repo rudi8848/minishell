@@ -82,5 +82,6 @@ int		ft_env(char **args, char **envp)
 int		ft_exit(char **args, char **envp)
 {
 	printf("%s\n", __FUNCTION__);
+	exit(0);
 	return 0;
 }

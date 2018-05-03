@@ -116,7 +116,7 @@ int	main(int argc, char *argv[], char *envp[])
 
 	ft_printf("%s", CLEAR);
 
-	while (ret > 0)
+	while (1)
 	{
 		type_prompt(envp);
 		//write(1, "###> ", 5);
@@ -125,7 +125,8 @@ int	main(int argc, char *argv[], char *envp[])
 		free(line);
 	if (commands)
 		executor(commands, envp);
-	//ft_printf("\n");
+	if (!ret)
+		ft_printf("\n");
 }
 	return (0);
 }
