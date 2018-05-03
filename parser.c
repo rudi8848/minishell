@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*get_env(char *needle, char **envp)
+char	*get_copy_env(char *needle, char **envp)
 {
 //	printf("---> %s\n", __FUNCTION__);
 	char	*res;
@@ -38,7 +38,7 @@ int		ft_find(t_cmd_list *commands, char **envp)
 		return (0);
 	if ((find = access(commands->args[0], F_OK)) != 0)
 	{
-		env_path = get_env("PATH", envp);
+		env_path = get_copy_env("PATH", envp);
 		path_arr = ft_strsplit(env_path, ':');
 		while (*path_arr != NULL)
 		{

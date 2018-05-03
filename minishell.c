@@ -11,9 +11,9 @@ void	type_prompt(char **envp)
 	char	*home;
 	int	len;
 
-	user = get_env("LOGNAME", envp);
-	pwd = get_env("PWD", envp);
-	home = get_env("HOME", envp);
+	user = get_copy_env("LOGNAME", envp);
+	pwd = get_copy_env("PWD", envp);
+	home = get_copy_env("HOME", envp);
 	len = ft_strlen(home);
 	if (ft_strnequ(home, pwd, len))
 	{

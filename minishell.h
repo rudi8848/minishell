@@ -38,7 +38,8 @@ typedef struct s_cmd_list
 
 t_cmd_list *parser(char *line/*, char **envp*/);
 int		ft_find(t_cmd_list *cmd, char **envp);
-char	*get_env(char *needle, char **envp);
+char	*get_copy_env(char *needle, char **envp);
+char	*get_orig_env(char *needle, char **envp);
 int		ft_echo(char **args, char **envp);
 int	ft_cd(char **args, char **envp);
 int		ft_setenv(char **args, char **envp);
