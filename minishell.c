@@ -10,10 +10,12 @@ void	type_prompt(char **envp)
 	char	*pwd;
 	char	*home;
 	int	len;
+	char	*host;
 
 	user = get_copy_env("LOGNAME", envp);
-	pwd = get_copy_env("PWD", envp);
+	pwd = get_current_wd();
 	home = get_copy_env("HOME", envp);
+	host = get_copy_env("HOST", envp);
 	len = ft_strlen(home);
 	if (ft_strnequ(home, pwd, len))
 	{
@@ -22,7 +24,7 @@ void	type_prompt(char **envp)
 	}
 	else
 		home = "";
-		ft_printf("%s%s: %s%s%s>%s ", RED,user,GREEN, home, pwd, RESET);
+		ft_printf("%s%s@%.7s: %s%s%s>%s ", RED,user, host, GREEN, home, pwd, RESET);
 
 }
 
@@ -75,14 +77,14 @@ void ft_cmd_exe(char **args, char **envp)
 	pid = fork();
 	if (pid < 0)
 	{
-		ft_printf("Error");
+		ft_printf("Error\n");
 		exit(0);
 	}
 	else if (pid == 0)
 	{
 		status = execve(args[0], args, envp);
 		if (args[0] && status < 0)
-			ft_printf("%s: command not found", args[0]);
+			ft_printf("%s: command not found\n", args[0]);
 		exit (0);
 	}
 	else

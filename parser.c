@@ -5,31 +5,29 @@ char	*get_copy_env(char *needle, char **envp)
 //	printf("---> %s\n", __FUNCTION__);
 	char	*res;
 	size_t	len;
+	int		i = 0;
 
 	len = ft_strlen(needle);
-	while (*envp != NULL)
+	while (envp[i] != NULL)
 	{
-		if (ft_strnequ(needle, *envp, len))
+		if (ft_strnequ(needle, envp[i], len) && envp[i][len] == '=')
 		{
-			res = ft_strsub(*envp, len + 1, ft_strlen(*envp));
-			//printf("%s: %s\n", __FUNCTION__, res);
+			res = ft_strsub(envp[i], len + 1, ft_strlen(envp[i]));
 			return (res);
 		}
-		envp++;
+		i++;
 	}
 	if (!res)
 	{
 		ft_printf("Environement element %s not found\n", needle);
-		exit(0);
+		return(0);
 	}
 	return (res);
 }
 
 int		ft_find(t_cmd_list *commands, char **envp)
 {
-	//printf("---> %s, %s\n", __FUNCTION__, commands->args[0]);
 	int	find;
-	//char	*valid_command = NULL;
 	char	**path_arr;
 	char	*env_path;
 	char	*tmp;
@@ -42,28 +40,23 @@ int		ft_find(t_cmd_list *commands, char **envp)
 		path_arr = ft_strsplit(env_path, ':');
 		while (*path_arr != NULL)
 		{
-	//		printf("--> %s: loop\n", __FUNCTION__);
 			tmp = ft_strjoin(*path_arr, "/");
 			find = access(ft_strcat(tmp, commands->args[0]), X_OK);
-			//printf("%s\n", tmp);
 			if (find == 0)
 			{
-				//printf("OK\n");
 				commands->args[0] = tmp;
-			return (1);
+				return (1);
 			}
 			path_arr++;
 		}
 		ft_printf("Command %s: not found\n", commands->args[0]);
 		return (0);
 	}
-	else
 	return (1);
 }
 
 t_cmd_list	*get_last(t_cmd_list *head)
 {
-	//printf("---> %s\n", __FUNCTION__);
 	if (head == NULL)
 	{
 		head = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
@@ -78,7 +71,6 @@ t_cmd_list	*get_last(t_cmd_list *head)
 
 void	push_back(t_cmd_list *head, char **args)
 {
-	//printf("---> %s\n", __FUNCTION__);
 	t_cmd_list	*last;
 	t_cmd_list	*tmp;
 
@@ -91,7 +83,6 @@ void	push_back(t_cmd_list *head, char **args)
 
 void	push(t_cmd_list **head, char **args)
 {
-	//printf("---> %s\n", __FUNCTION__);
 	t_cmd_list	*tmp;
 
 	tmp = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
@@ -141,7 +132,6 @@ t_cmd_list		*parser(char *line)
 				while (ptr[i] && ptr[i] != ';')
 					i++;
 				tmp = ft_strsub(ptr, 0, i);
-				printf(">%s\n", tmp);
 				args = ft_strsplit(tmp, ' ');
 				push_back(commands, args);		
 				ptr += i;
@@ -149,7 +139,6 @@ t_cmd_list		*parser(char *line)
 		}
 		else
 		{
-			
 			args = ft_strsplit(line, ' ');
 			push(&commands, args);
 		}
