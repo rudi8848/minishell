@@ -17,13 +17,18 @@ void	type_prompt(char **envp)
 	len = ft_strlen(home);
 	if (ft_strnequ(home, pwd, len))
 	{
+		free(home);
 		home = "~";
 		pwd = ft_strsub(pwd, len, ft_strlen(pwd) - len);
 	}
 	else
+	{
+		free(home);
 		home = "";
+	}
 		ft_printf("%s%s: %s%s%s>%s ", RED,user, GREEN, home, pwd, RESET);
-		ft_strdel(&pwd);
+		//ft_strdel(&pwd);
+		ft_strdel(&user);
 }
 
 int	check_built(char *cmd)
@@ -89,9 +94,26 @@ void ft_cmd_exe(char **args, char **envp)
 		wait(&status);
 }
 
+void	ft_list_del(t_cmd_list **commands)
+{
+	t_cmd_list *prev;
+
+	while (*commands)
+	{
+		prev = (*commands);
+		(*commands) = (*commands)->next;
+		ft_strdel(prev->args);
+		free(prev);
+	}
+	//free(*commands);
+}
+
 void	executor(t_cmd_list *commands, char **envp)
 {
 	int ret;
+	t_cmd_list *tmp;
+
+	tmp = commands;
 	while (commands)
 	{
 	ret = check_built(commands->args[0]);
@@ -105,6 +127,7 @@ void	executor(t_cmd_list *commands, char **envp)
 	}
 	commands = commands->next;
 }
+	ft_list_del(&tmp);
 }
 
 

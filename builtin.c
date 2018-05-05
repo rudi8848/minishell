@@ -104,12 +104,13 @@ int	ft_cd(char **args, char **envp)
 			}
 			envp++;
 		}
+		free(new);
 		new = get_current_wd();
 		*envp = ft_strjoin("PWD=", new);
 	}
 	else
 		printf("cd error\n");
-	ft_strdel(&new);
+	//free(new);				doesn't want delete
 	return ret;
 }
 
