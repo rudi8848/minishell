@@ -25,12 +25,25 @@ char	*get_copy_env(char *needle, char **envp)
 	return (res);
 }
 
+void	free_arr(char **array)
+{
+	int	i = 0;
+	while (array[i] != NULL)
+		i++;
+	while (i != 0)
+	{
+		free(array[i]);
+		i--;
+	}
+}
+
 int		ft_find(t_cmd_list *commands, char **envp)
 {
 	int	find;
 	char	**path_arr;
 	char	*env_path;
 	char	*tmp;
+	char	**begin;
 
 	if (!commands->args[0])
 		return (0);
@@ -38,18 +51,22 @@ int		ft_find(t_cmd_list *commands, char **envp)
 	{
 		env_path = get_copy_env("PATH", envp);
 		path_arr = ft_strsplit(env_path, ':');
+		begin = path_arr;
 		while (*path_arr != NULL)
 		{
 			tmp = ft_strjoin(*path_arr, "/");
 			find = access(ft_strcat(tmp, commands->args[0]), X_OK);
 			if (find == 0)
 			{
+				free(commands->args[0]);
 				commands->args[0] = tmp;
 				return (1);
 			}
 			path_arr++;
 		}
 		ft_printf("Command %s: not found\n", commands->args[0]);
+		//free path_arr, env_path
+		free_arr(begin);
 		return (0);
 	}
 	return (1);
@@ -100,7 +117,7 @@ int		ft_valid_str(char *str)
 	val = 0;
 	while (str[i])
 	{
-		if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
+		if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n' && str[i] != ';')
 			val++;
 		i++;
 	}
@@ -113,6 +130,7 @@ t_cmd_list		*parser(char *line)
 	char		*ptr;
 	char		**args;
 	char		*tmp;
+
 	if (ft_valid_str(line))
 	{
 		if ((ptr = ft_strchr(line, ';')))

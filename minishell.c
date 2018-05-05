@@ -28,6 +28,7 @@ void	type_prompt(char **envp)
 	}
 		ft_printf("%s%s: %s%s%s>%s ", RED,user, GREEN, home, pwd, RESET);
 		//ft_strdel(&pwd);
+		
 		ft_strdel(&user);
 }
 
@@ -58,6 +59,7 @@ void ft_built_exe(char **args, char **envp, t_built cmd)
 {
 	static t_pfb	*built_tab = NULL;
 	t_pfb			ft_run;
+
 	if (!built_tab)
 	{
 		built_tab = (t_pfb*)ft_memalloc(sizeof(t_pfb) * BUILT);
@@ -116,17 +118,17 @@ void	executor(t_cmd_list *commands, char **envp)
 	tmp = commands;
 	while (commands)
 	{
-	ret = check_built(commands->args[0]);
-	if (ret >= 0)
-		ft_built_exe(commands->args, envp, ret);
-	else
-	{
-		ret = ft_find(commands, envp);
-		if (ret)
-			ft_cmd_exe(commands->args, envp);
+		ret = check_built(commands->args[0]);
+		if (ret >= 0)
+			ft_built_exe(commands->args, envp, ret);
+		else
+		{
+			ret = ft_find(commands, envp);
+			if (ret)
+				ft_cmd_exe(commands->args, envp);
+		}
+		commands = commands->next;
 	}
-	commands = commands->next;
-}
 	ft_list_del(&tmp);
 }
 
@@ -142,7 +144,6 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
 	{
 		type_prompt(envp);
-		//write(1, "###> ", 5);
 		ret = get_next_line(1, &line);
 		commands = parser(line);
 		free(line);
