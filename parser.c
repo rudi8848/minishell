@@ -62,6 +62,7 @@ int		ft_find(t_cmd_list *commands, char **envp)
 				commands->args[0] = tmp;
 				return (1);
 			}
+			free(tmp);
 			path_arr++;
 		}
 		ft_printf("Command %s: not found\n", commands->args[0]);
