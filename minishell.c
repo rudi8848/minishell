@@ -23,7 +23,7 @@ void	type_prompt(char **envp)
 	else
 		home = "";
 		ft_printf("%s%s: %s%s%s>%s ", RED,user, GREEN, home, pwd, RESET);
-
+		ft_strdel(&pwd);
 }
 
 int	check_built(char *cmd)

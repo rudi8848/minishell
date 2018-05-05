@@ -62,7 +62,8 @@ char	*ft_path_substitute(char *path, char **envp)
 	char	*tmp;
 	int		i = 0;
 
-
+	dest = NULL;
+	tmp = NULL;
 	if (!path || path[0] == '~')
 	{
 		tmp = get_copy_env("HOME", envp);
@@ -70,9 +71,7 @@ char	*ft_path_substitute(char *path, char **envp)
 			return (tmp);
 		dest = ft_strjoin(tmp, path + 1);
 	}
-	if (dest)
-		return (dest);
-	return (NULL);
+	return (dest);
 }
 
 
@@ -84,6 +83,8 @@ int	ft_cd(char **args, char **envp)
 	char	*new;
 	char	*ptr;
 
+	new = NULL;
+	ptr = NULL;
 	if (ft_strequ(".", args[1]))
 		return (ret);
 	else if (! args[1] || args[1][0] == '~')
@@ -108,6 +109,7 @@ int	ft_cd(char **args, char **envp)
 	}
 	else
 		printf("cd error\n");
+	ft_strdel(&new);
 	return ret;
 }
 
