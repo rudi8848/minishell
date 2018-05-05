@@ -34,14 +34,16 @@ char	*get_current_wd(void)
 	dest = getcwd(buf, 2048);
 	return (dest);
 }
-
+/*
 char	*get_prev_dir(char	*path, char **envp)
 {
+	printf("---> %s, %s\n", __FUNCTION__, path);
 	size_t	len;
 	char	*tmp;
 	char	*dest;
 	
 	tmp = get_current_wd();
+	printf("---> tmp: %s\n", tmp);
 	len = ft_strlen(tmp);
 	len--;
 	while (tmp[len] && tmp[len] != '/')
@@ -49,9 +51,10 @@ char	*get_prev_dir(char	*path, char **envp)
 	if (!len)
 		len = 1;
 	dest = ft_strsub(tmp, 0, len);
+	printf("---> dest: %s\n", dest);
 	return(dest);
 }
-
+*/
 char	*ft_path_substitute(char *path, char **envp)
 {
 	//printf("---> %s, %s\n", __FUNCTION__, path);
@@ -66,14 +69,6 @@ char	*ft_path_substitute(char *path, char **envp)
 		if (!path || !path[1])
 			return (tmp);
 		dest = ft_strjoin(tmp, path + 1);
-	}
-	else
-	{
-		if (ft_strnequ("..", path,2))
-			tmp = get_prev_dir(path, envp);
-		if (!path[3])
-			return (tmp);
-		dest = ft_strjoin(tmp, path + 2);
 	}
 	if (dest)
 		return (dest);
@@ -91,11 +86,11 @@ int	ft_cd(char **args, char **envp)
 
 	if (ft_strequ(".", args[1]))
 		return (ret);
-	else if (! args[1] || args[1][0] == '~' || ft_strnequ("..", args[1], 2))
+	else if (! args[1] || args[1][0] == '~')
 		new = ft_path_substitute(args[1], envp);
 	else
 		new = args[1];
-//	printf("%s %s\n", __FUNCTION__, new);
+	//printf("%s %s\n", __FUNCTION__, new);
 	ret = chdir(new);	
 	if (ret == OK)
 	{
@@ -113,7 +108,6 @@ int	ft_cd(char **args, char **envp)
 	}
 	else
 		printf("cd error\n");
-		
 	return ret;
 }
 
