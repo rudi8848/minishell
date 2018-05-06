@@ -92,7 +92,8 @@ int	ft_cd(char **args, char **envp)
 	else
 		new = args[1];
 //	printf("%s %s\n", __FUNCTION__, new);
-	ret = chdir(new);	
+	ret = chdir(new);
+	free(new);
 	if (ret == OK)
 	{
 		while (*envp)
@@ -107,7 +108,7 @@ int	ft_cd(char **args, char **envp)
 		new = get_current_wd();
 //		printf("--> new: %s\n", new);
 		*envp = ft_strjoin("PWD=", new);
-		//free(ptr);
+	//	free(ptr);
 	}
 	else
 		printf("cd error\n");
