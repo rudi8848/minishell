@@ -57,10 +57,9 @@ char	*get_prev_dir(char	*path, char **envp)
 */
 char	*ft_path_substitute(char *path, char **envp)
 {
-	//printf("---> %s, %s\n", __FUNCTION__, path);
+//printf("---> %s, %s\n", __FUNCTION__, path);
 	char	*dest;
 	char	*tmp;
-	int		i = 0;
 
 	dest = NULL;
 	tmp = NULL;
@@ -70,6 +69,7 @@ char	*ft_path_substitute(char *path, char **envp)
 		if (!path || !path[1])
 			return (tmp);
 		dest = ft_strjoin(tmp, path + 1);
+		free(path);
 	}
 	return (dest);
 }
@@ -77,7 +77,7 @@ char	*ft_path_substitute(char *path, char **envp)
 
 int	ft_cd(char **args, char **envp)
 {
-	//printf("%s\n", __FUNCTION__);
+//	printf("%s\n", __FUNCTION__);
 	int	ret = 0;
 	int i = 0;
 	char	*new;
@@ -91,7 +91,7 @@ int	ft_cd(char **args, char **envp)
 		new = ft_path_substitute(args[1], envp);
 	else
 		new = args[1];
-	//printf("%s %s\n", __FUNCTION__, new);
+//	printf("%s %s\n", __FUNCTION__, new);
 	ret = chdir(new);	
 	if (ret == OK)
 	{
@@ -104,9 +104,10 @@ int	ft_cd(char **args, char **envp)
 			}
 			envp++;
 		}
-		free(new);
 		new = get_current_wd();
+//		printf("--> new: %s\n", new);
 		*envp = ft_strjoin("PWD=", new);
+		//free(ptr);
 	}
 	else
 		printf("cd error\n");
@@ -139,7 +140,6 @@ int		ft_setenv(char **args, char **envp)
 	int		size;
 	int i = 0;
 
-	//args[1] - name of variable, args[2] - value,  if args != 2 - error: Too many arguments
 	printf("%s\n", args[1]);
 	if (args[3] != NULL || !args[1])
 	{
@@ -148,7 +148,6 @@ int		ft_setenv(char **args, char **envp)
 	}
 	else
 	{
-	//if there is variable with such name - unset it and then set new
 		if ((var = get_orig_env(args[1], envp)) != NULL)
 		{
 			var = ft_strcat(args[1], args[2]);

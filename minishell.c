@@ -6,10 +6,12 @@
 
 void	type_prompt(char **envp)
 {
+	//printf("---> %s\n", __FUNCTION__);
 	char	*user;
 	char	*pwd;
 	char	*home;
 	int	len;
+	char	*tmp;
 
 	user = get_copy_env("LOGNAME", envp);
 	pwd = get_current_wd();
@@ -17,23 +19,27 @@ void	type_prompt(char **envp)
 	len = ft_strlen(home);
 	if (ft_strnequ(home, pwd, len))
 	{
-		free(home);
+//		free(home);
 		home = "~";
-		pwd = ft_strsub(pwd, len, ft_strlen(pwd) - len);
+		tmp = ft_strsub(pwd, len, ft_strlen(pwd) - len);
 	}
 	else
 	{
-		free(home);
+//		free(home);
 		home = "";
+		tmp = pwd;
 	}
-		ft_printf("%s%s: %s%s%s>%s ", RED,user, GREEN, home, pwd, RESET);
+		ft_printf("%s%s: %s%s%s>%s ", RED,user, GREEN, home, tmp, RESET);
 		//ft_strdel(&pwd);
+		if (tmp != pwd)
+			ft_strdel(&tmp);
 		
-		ft_strdel(&user);
+//		ft_strdel(&user);
 }
 
 int	check_built(char *cmd)
 {
+	printf("---> %s\n", __FUNCTION__);
 	int i = 0;
 	char *built[] = {"echo", "cd", "setenv", "unsetenv", "env", "exit", NULL};
 	while (built[i])
@@ -98,13 +104,15 @@ void ft_cmd_exe(char **args, char **envp)
 
 void	ft_list_del(t_cmd_list **commands)
 {
+	printf("---> %s\n", __FUNCTION__);
 	t_cmd_list *prev;
 
 	while (*commands)
 	{
 		prev = (*commands);
 		(*commands) = (*commands)->next;
-		ft_strdel(prev->args);
+		free_arr(prev->args);
+		//ft_strdel(prev->args);
 		free(prev);
 	}
 	//free(*commands);
@@ -112,6 +120,7 @@ void	ft_list_del(t_cmd_list **commands)
 
 void	executor(t_cmd_list *commands, char **envp)
 {
+	printf("---> %s\n", __FUNCTION__);
 	int ret;
 	t_cmd_list *tmp;
 
@@ -124,6 +133,7 @@ void	executor(t_cmd_list *commands, char **envp)
 		else
 		{
 			ret = ft_find(commands, envp);
+	printf("---> %s\n", __FUNCTION__);
 			if (ret)
 				ft_cmd_exe(commands->args, envp);
 		}
@@ -140,7 +150,6 @@ int	main(int argc, char *argv[], char *envp[])
 	t_cmd_list *commands;
 
 	ft_printf("%s", CLEAR);
-
 	while (1)
 	{
 		type_prompt(envp);

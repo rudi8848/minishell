@@ -48,4 +48,5 @@ int		ft_env(char **args, char **envp);
 int		ft_exit(char **args, char **envp);
 int		env_size(char **envp);
 char	*get_current_wd(void);
+void    free_arr(char **array);
 #endif

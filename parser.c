@@ -12,7 +12,7 @@ char	*get_copy_env(char *needle, char **envp)
 	{
 		if (ft_strnequ(needle, envp[i], len) && envp[i][len] == '=')
 		{
-			res = ft_strsub(envp[i], len + 1, ft_strlen(envp[i]));
+			res = envp[i] + (len + 1);
 			return (res);
 		}
 		i++;
@@ -27,47 +27,53 @@ char	*get_copy_env(char *needle, char **envp)
 
 void	free_arr(char **array)
 {
+	printf("---> %s\n", __FUNCTION__);
 	int	i = 0;
+
 	while (array[i] != NULL)
-		i++;
-	while (i != 0)
 	{
+		printf("---> array[%d]", i);
+	//	printf("%s\n", array[i]);
 		free(array[i]);
-		i--;
+		i++;
 	}
+	free(array);
+	array = NULL;
+
 }
 
 int		ft_find(t_cmd_list *commands, char **envp)
 {
+	printf("---> %s, %s\n", __FUNCTION__, commands->args[0]);
 	int	find;
 	char	**path_arr;
 	char	*env_path;
 	char	*tmp;
-	char	**begin;
-
+	int	i = 0;
 	if (!commands->args[0])
 		return (0);
 	if ((find = access(commands->args[0], F_OK)) != 0)
 	{
 		env_path = get_copy_env("PATH", envp);
-		path_arr = ft_strsplit(env_path, ':');
-		begin = path_arr;
-		while (*path_arr != NULL)
+		path_arr = ft_strsplit(env_path, ':');	
+		while (path_arr[i] != NULL)
 		{
-			tmp = ft_strjoin(*path_arr, "/");
+			tmp = ft_strjoin(path_arr[i], "/");
 			find = access(ft_strcat(tmp, commands->args[0]), X_OK);
 			if (find == 0)
 			{
 				free(commands->args[0]);
-				commands->args[0] = tmp;
+				commands->args[0] = ft_strdup(tmp);
+				free_arr(path_arr);
+				free(tmp);
 				return (1);
 			}
-			free(tmp);
-			path_arr++;
+			if (tmp)
+				free(tmp);
+			i++;
 		}
 		ft_printf("Command %s: not found\n", commands->args[0]);
-		//free path_arr, env_path
-		free_arr(begin);
+		free_arr(path_arr);
 		return (0);
 	}
 	return (1);
@@ -141,6 +147,7 @@ t_cmd_list		*parser(char *line)
 				i++;
 			ptr = ft_strsub(line, 0, i);
 			args = ft_strsplit(ptr, ' ');
+			free(ptr);
 			push(&commands, args);
 			ptr = line;
 			while (*ptr && ptr != NULL)
@@ -152,6 +159,7 @@ t_cmd_list		*parser(char *line)
 					i++;
 				tmp = ft_strsub(ptr, 0, i);
 				args = ft_strsplit(tmp, ' ');
+			free(tmp);
 				push_back(commands, args);		
 				ptr += i;
 			}
