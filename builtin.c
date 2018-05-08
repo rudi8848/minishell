@@ -7,15 +7,24 @@ int		ft_echo(char **args, char **envp)
 	printf("%s\n", __FUNCTION__);
 	int i = 1;
 	int j;
+	char *ptr;
 	while (args[i])
 	{
 
 		j = 0;
 		while (args[i][j])
 		{
-			if ((args[i][j] != '\"' && args[i][j] != '\'') ||
+
+			if ((args[i][0] != '$' && args[i][j] != '\"' && args[i][j] != '\'') ||
 				(args[i][j] == '\'' && ft_isalpha(args[i][j - 1]) && ft_isalpha(args[i][j + 1])))
 				ft_putchar(args[i][j]);
+			else if (args[i][0] == '$')
+			{
+				ptr = get_copy_env(args[i] + 1, envp);
+				if (ptr)
+					ft_printf("%s", ptr);
+				j += ft_strlen(args[i]);
+			}
 			j++;
 		}
 		if (args[i + 1])
@@ -69,7 +78,7 @@ char	*ft_path_substitute(char *path, char **envp)
 		if (!path || !path[1])
 			return (tmp);
 		dest = ft_strjoin(tmp, path + 1);
-		free(path);
+		//free(path);
 	}
 	return (dest);
 }
@@ -93,7 +102,8 @@ int	ft_cd(char **args, char **envp)
 		new = args[1];
 //	printf("%s %s\n", __FUNCTION__, new);
 	ret = chdir(new);
-	free(new);
+
+//	free(new);
 	if (ret == OK)
 	{
 		while (*envp)
@@ -135,7 +145,7 @@ char	*get_orig_env(char *name, char **envp)
 
 int		ft_setenv(char **args, char **envp)
 {
-	printf("%s\n", __FUNCTION__);
+	printf("%s %s %s %s\n", __FUNCTION__, args[0], args[1], args[2]);
 	char *var;
 	char **new_envp;
 	int		size;
@@ -160,14 +170,14 @@ int		ft_setenv(char **args, char **envp)
 			//
 			printf("%d\n",size );
 			//
-			new_envp = (char**)ft_memalloc(sizeof(char) * (size + 1));
+			new_envp = (char**)ft_memalloc(sizeof(char) * (size + 2));
 			if (!new_envp)
 			{
 				ft_printf("Cannot allocate memory\n");
 				return (0);
 			}
 			//var = ft_strjoin(args[1], "=");
-			while (i < size - 1)
+			while (i < size)
 			{
 				new_envp[i] = envp[i];
 				i++;
@@ -176,10 +186,10 @@ int		ft_setenv(char **args, char **envp)
 			
 	printf("after loop, argv[1]: %s\n", args[1]);
 		if (args[2])
-			new_envp[i] = ft_strcat(args[1], args[2]);
+			new_envp[size] = ft_strjoin(args[1], args[2]);
 		else
-			new_envp[i] = args[1];
-			new_envp[size] = NULL;
+			new_envp[size] = args[1];
+			new_envp[size +1] = NULL;
 			envp = new_envp;
 		}
 	}

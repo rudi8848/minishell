@@ -1,5 +1,4 @@
 #include "minishell.h"
-#include "get_next_line.h"
 #include <stdio.h>
 
 
@@ -143,11 +142,13 @@ void	executor(t_cmd_list *commands, char **envp)
 }
 
 
-int	main(int argc, char *argv[], char *envp[])
+int	main(void)
 {
 	char *line;
 	int ret = 1;
 	t_cmd_list *commands;
+	extern char **environ;
+	char **envp = environ;
 
 	ft_printf("%s", CLEAR);
 	while (1)

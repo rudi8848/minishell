@@ -3,7 +3,7 @@
 char	*get_copy_env(char *needle, char **envp)
 {
 //	printf("---> %s\n", __FUNCTION__);
-	char	*res;
+	char	*res = NULL;
 	size_t	len;
 	int		i = 0;
 
@@ -133,6 +133,7 @@ int		ft_valid_str(char *str)
 
 t_cmd_list		*parser(char *line)
 {
+	printf("---> %s\n", __FUNCTION__);
 	t_cmd_list	*commands = NULL;
 	char		*ptr;
 	char		**args;

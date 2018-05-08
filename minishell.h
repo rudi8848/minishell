@@ -3,6 +3,7 @@
 
 #include "libft/includes/libft.h"
 #include "libft/includes/ft_printf.h"
+#include "libft/includes/get_next_line.h"
 #include <unistd.h>		//fork, execve, chdir,access, getcwd
 #include <signal.h>		//signal, kill
 #include <sys/types.h>		//wait, fork

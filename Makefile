@@ -1,5 +1,5 @@
 NAME = minishell
-SRCS = minishell.c get_next_line.c parser.c builtin.c
+SRCS = minishell.c parser.c builtin.c
 #SRCS = test.c
 LIB = libft/libft.a
 OBJ = $(SRCS:.c=.o)
