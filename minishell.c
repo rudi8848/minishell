@@ -126,6 +126,14 @@ void	executor(t_cmd_list *commands, char **envp)
 	tmp = commands;
 	while (commands)
 	{
+		//--------------------
+		int i = 0;
+		while (commands->args[i])
+		{
+			printf("--> [	%s	]\n", commands->args[i]);
+			i++;
+		}
+		//-------------------
 		ret = check_built(commands->args[0]);
 		if (ret >= 0)
 			ft_built_exe(commands->args, envp, ret);
@@ -141,15 +149,40 @@ void	executor(t_cmd_list *commands, char **envp)
 	ft_list_del(&tmp);
 }
 
+char	**copy_env(void)
+{
+	extern char **environ;
+	int size;
+	char	**copy;
+	int	i;
+
+	i = 0;
+	size = env_size(environ);
+	if (!size)
+	{
+		ft_printf("Error: cannot allocate memory\n");
+		exit(0);
+	}
+	copy = (char**)ft_memalloc(sizeof(char*) * size + 1);
+	if (!copy)
+		exit(0);
+	while (environ[i])
+	{
+		copy[i] = ft_strdup(environ[i]);
+		i++;
+	}
+	copy[i] = NULL;
+	return (copy);
+}
 
 int	main(void)
 {
 	char *line;
 	int ret = 1;
 	t_cmd_list *commands;
-	extern char **environ;
-	char **envp = environ;
+	char **envp;
 
+	envp = copy_env();
 	ft_printf("%s", CLEAR);
 	while (1)
 	{

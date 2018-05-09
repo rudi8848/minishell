@@ -1,7 +1,5 @@
 #include "minishell.h"
 
-//extern char **environ;
-
 int		ft_echo(char **args, char **envp)
 {
 	printf("%s\n", __FUNCTION__);
@@ -43,27 +41,7 @@ char	*get_current_wd(void)
 	dest = getcwd(buf, 2048);
 	return (dest);
 }
-/*
-char	*get_prev_dir(char	*path, char **envp)
-{
-	printf("---> %s, %s\n", __FUNCTION__, path);
-	size_t	len;
-	char	*tmp;
-	char	*dest;
-	
-	tmp = get_current_wd();
-	printf("---> tmp: %s\n", tmp);
-	len = ft_strlen(tmp);
-	len--;
-	while (tmp[len] && tmp[len] != '/')
-		len--;
-	if (!len)
-		len = 1;
-	dest = ft_strsub(tmp, 0, len);
-	printf("---> dest: %s\n", dest);
-	return(dest);
-}
-*/
+
 char	*ft_path_substitute(char *path, char **envp)
 {
 //printf("---> %s, %s\n", __FUNCTION__, path);
@@ -91,6 +69,8 @@ int	ft_cd(char **args, char **envp)
 	int i = 0;
 	char	*new;
 	char	*ptr;
+	char	*arr[4];
+	char	*old;
 
 	new = NULL;
 	ptr = NULL;
@@ -100,26 +80,25 @@ int	ft_cd(char **args, char **envp)
 		new = ft_path_substitute(args[1], envp);
 	else
 		new = args[1];
-//	printf("%s %s\n", __FUNCTION__, new);
+	old = ft_strdup(get_current_wd());
 	ret = chdir(new);
 
 //	free(new);
 	if (ret == OK)
 	{
-		while (*envp)
-		{
-			if (ft_strnequ("PWD", *envp, 3))
-			{
-				ptr = *envp;
-				break;
-			}
-			envp++;
-		}
 		new = get_current_wd();
-//		printf("--> new: %s\n", new);
-		*envp = ft_strjoin("PWD=", new);
+		printf("--> new: %s\n", new);
+	arr[0] = "setenv";
+	arr[1] = "PWD";
+	arr[2] = new;
+	arr[3] = NULL;
+		ft_setenv(arr, envp);
 	//	free(ptr);
-	}
+	arr[1] = "OLDPWD";
+	printf("%s OLDPWD %s\n", __FUNCTION__, old);
+	arr[2] = old;
+	ft_setenv(arr, envp);
+	}	
 	else
 		printf("cd error\n");
 	//free(new);				doesn't want delete
@@ -145,13 +124,13 @@ char	*get_orig_env(char *name, char **envp)
 
 int		ft_setenv(char **args, char **envp)
 {
-	printf("%s %s %s %s\n", __FUNCTION__, args[0], args[1], args[2]);
+	printf("%s \n", __FUNCTION__);
 	char *var;
 	char **new_envp;
 	int		size;
 	int i = 0;
 
-	printf("%s\n", args[1]);
+	printf("%s, %s, %s\n", args[0], args[1], args[2]);
 	if (args[3] != NULL || !args[1])
 	{
 		ft_printf("setenv: Wrong number of arguments\n");
@@ -159,24 +138,40 @@ int		ft_setenv(char **args, char **envp)
 	}
 	else
 	{
+		while (envp[i])
+		{
+			if (ft_strnequ(args[1], envp[i], strlen(args[1])))
+			{
+				free(envp[i]);
+				if (!args[2])
+					envp[i] = ft_strdup(args[1]);
+				else
+				{
+					var = ft_strjoin(args[1], "=");
+					envp[i] = ft_strjoin(var, args[2]);
+					free(var);
+					return (0);
+				}
+			}
+			i++;
+		}
+i = 0;
+		/*
 		if ((var = get_orig_env(args[1], envp)) != NULL)
 		{
-			var = ft_strcat(args[1], args[2]);
+			var = ft_strjoin(args[1], args[2]);
 			printf("%s\n", var);
-		}
-		else
-		{
+		}*/
+		//else
+		//{
 			size = env_size(envp);
-			//
-			printf("%d\n",size );
-			//
 			new_envp = (char**)ft_memalloc(sizeof(char) * (size + 2));
 			if (!new_envp)
 			{
 				ft_printf("Cannot allocate memory\n");
 				return (0);
 			}
-			//var = ft_strjoin(args[1], "=");
+			var = ft_strjoin(args[1], "=");
 			while (i < size)
 			{
 				new_envp[i] = envp[i];
@@ -186,12 +181,16 @@ int		ft_setenv(char **args, char **envp)
 			
 	printf("after loop, argv[1]: %s\n", args[1]);
 		if (args[2])
-			new_envp[size] = ft_strjoin(args[1], args[2]);
+		{
+			new_envp[size] = ft_strjoin(var, args[2]);
+			free(var);
+		}
 		else
 			new_envp[size] = args[1];
-			new_envp[size +1] = NULL;
-			envp = new_envp;
-		}
+		new_envp[size +1] = NULL;
+		free_arr(envp);
+		envp = new_envp;
+		//}
 	}
 	return 0;
 }
@@ -211,7 +210,7 @@ int		env_size(char **envp)
 }
 int		ft_env(char **args, char **envp)
 {
-	printf("%s\n", __FUNCTION__);
+	printf("---> %s\n", __FUNCTION__);
 	int i = 0;
 	while (envp[i] != NULL)
 	{
@@ -223,6 +222,7 @@ int		ft_env(char **args, char **envp)
 
 int		ft_exit(char **args, char **envp)
 {
+	free_arr(envp);
 	printf("%s\n", __FUNCTION__);
 	exit(0);
 	return 0;
