@@ -131,7 +131,7 @@ int		ft_setenv(char **args, char **envp)
 	int i = 0;
 	char *str;
 
-	printf("%s, %s, %s\n", args[0], args[1], args[2]);
+	printf("args 0, 1, 2: %s, %s, %s\n", args[0], args[1], args[2]);
 	if (args[3] != NULL || !args[1])
 	{
 		ft_printf("setenv: Wrong number of arguments\n");
@@ -157,9 +157,9 @@ int		ft_setenv(char **args, char **envp)
 			i++;
 		}
 
-		printf("NO %s\n", str);
+		printf("NOT FOUND, str is:  %s\n", str);
 		size = env_size(envp);
-		new_envp = (char**)ft_memalloc(sizeof(char) * (size + 2));
+		new_envp = (char**)ft_memalloc(sizeof(char*) * (size + 2));
 		if (!new_envp)
 		{
 			ft_printf("Cannot allocate memory\n");
