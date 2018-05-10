@@ -60,7 +60,7 @@ void	ft_set_builtins(t_pfb *built_tab)
 	built_tab[EXIT] = &ft_exit;
 }
 
-void ft_built_exe(char **args, char **envp, t_built cmd)
+void ft_built_exe(char **args, char ***envp, t_built cmd)
 {
 	static t_pfb	*built_tab = NULL;
 	t_pfb			ft_run;
@@ -76,7 +76,7 @@ void ft_built_exe(char **args, char **envp, t_built cmd)
 		ft_set_builtins(built_tab);
 	}
 	ft_run = built_tab[cmd];
-	ft_run(args, &envp);
+	ft_run(args, envp);
 }
 
 void ft_cmd_exe(char **args, char **envp)
@@ -117,7 +117,7 @@ void	ft_list_del(t_cmd_list **commands)
 	//free(*commands);
 }
 
-void	executor(t_cmd_list *commands, char **envp)
+void	executor(t_cmd_list *commands, char ***envp)
 {
 	printf("---> %s\n", __FUNCTION__);
 	int ret;
@@ -139,10 +139,10 @@ void	executor(t_cmd_list *commands, char **envp)
 			ft_built_exe(commands->args, envp, ret);
 		else
 		{
-			ret = ft_find(commands, envp);
+			ret = ft_find(commands, *envp);
 	printf("---> %s\n", __FUNCTION__);
 			if (ret)
-				ft_cmd_exe(commands->args, envp);
+				ft_cmd_exe(commands->args, *envp);
 		}
 		commands = commands->next;
 	}
@@ -193,7 +193,7 @@ int	main(void)
 		commands = parser(line);
 		free(line);
 	if (commands)
-		executor(commands, envp);
+		executor(commands, &envp);
 	if (!ret)
 		ft_printf("\n");
 }

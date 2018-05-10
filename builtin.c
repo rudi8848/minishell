@@ -145,12 +145,13 @@ int		ft_setenv(char **args, char ***envp)
 		str = ft_strjoin(str, args[2]);
 		printf("%s\n", str);
 		len = ft_strlen(args[1]);
-		while (**(envp))
+		size = env_size(*envp);
+		while (i < size)
 		{
 			if (ft_strnequ(args[1], *(*(envp) +i), len))
 			{
 				printf("find in list\n");
-				free(*(envp) +i);
+				free(*(*(envp) +i));
 				*(*(envp) +i) = ft_strdup(str);
 				free(str);
 				return (0);
@@ -159,7 +160,6 @@ int		ft_setenv(char **args, char ***envp)
 		}
 
 		printf("NOT FOUND, str is:  %s\n", str);
-		size = env_size(*envp);
 		new_envp = (char**)ft_memalloc(sizeof(char*) * (size + 2));
 		if (!new_envp)
 		{
@@ -170,7 +170,7 @@ int		ft_setenv(char **args, char ***envp)
 		i = 0;
 		while (i < size)
 		{
-			new_envp[i] = ft_strdup(*envp[i]);
+			new_envp[i] = ft_strdup(*(*(envp) +i));
 			i++;
 		}
 		new_envp[size] = ft_strdup(str);
@@ -184,14 +184,14 @@ int		ft_setenv(char **args, char ***envp)
 
 		free_arr(*envp);
 		envp = &new_envp;
-
+/*
 		i = 0;
 		while (*envp[i])
 		{
 			printf("---> %s\n", *envp[i]);
 			i++;
 		}
-
+*/
 	}
 	return 0;
 }
