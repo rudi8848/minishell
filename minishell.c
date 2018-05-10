@@ -76,7 +76,7 @@ void ft_built_exe(char **args, char **envp, t_built cmd)
 		ft_set_builtins(built_tab);
 	}
 	ft_run = built_tab[cmd];
-	ft_run(args, envp);
+	ft_run(args, &envp);
 }
 
 void ft_cmd_exe(char **args, char **envp)
@@ -151,6 +151,7 @@ void	executor(t_cmd_list *commands, char **envp)
 
 char	**copy_env(void)
 {
+	printf(">>>>>>>>> %s <<<<<<<<<<\n", __FUNCTION__);
 	extern char **environ;
 	int size;
 	char	**copy;
@@ -182,8 +183,9 @@ int	main(void)
 	t_cmd_list *commands;
 	char **envp;
 
-	envp = copy_env();
 	ft_printf("%s", CLEAR);
+	envp = copy_env();
+	
 	while (1)
 	{
 		type_prompt(envp);
