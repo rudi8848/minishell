@@ -148,11 +148,11 @@ int		ft_setenv(char **args, char ***envp)
 		size = env_size(*envp);
 		while (i < size)
 		{
-			if (ft_strnequ(args[1], *(*(envp) +i), len))
+			if (ft_strnequ(args[1], *(*envp +i), len))
 			{
 				printf("find in list\n");
-				free(*(*(envp) +i));
-				*(*(envp) +i) = ft_strdup(str);
+				free(*(*envp +i));
+				*(*envp +i) = ft_strdup(str);
 				free(str);
 				return (0);
 			}
@@ -170,7 +170,7 @@ int		ft_setenv(char **args, char ***envp)
 		i = 0;
 		while (i < size)
 		{
-			new_envp[i] = ft_strdup(*(*(envp) +i));
+			new_envp[i] = ft_strdup(*(*envp +i));
 			i++;
 		}
 		new_envp[size] = ft_strdup(str);
@@ -183,6 +183,8 @@ int		ft_setenv(char **args, char ***envp)
 		new_envp[size + 1] = NULL;
 
 		free_arr(*envp);
+		printf("free\n");
+		free(*envp);
 		envp = &new_envp;
 /*
 		i = 0;
@@ -213,9 +215,9 @@ int		ft_env(char **args, char ***envp)
 {
 	printf("---> %s\n", __FUNCTION__);
 	int i = 0;
-	while (*envp[i] != NULL)
+	while (*(*envp +i) != NULL)
 	{
-			ft_printf("%s\n", *envp[i]);
+			ft_printf("%s\n", *(*envp +i));
 		i++;
 	}
 	return (0);
