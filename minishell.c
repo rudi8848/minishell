@@ -5,7 +5,7 @@
 
 void	type_prompt(char **envp)
 {
-	//printf("---> %s\n", __FUNCTION__);
+	printf("---> %s\n", __FUNCTION__);
 	char	*user;
 	char	*pwd;
 	char	*home;

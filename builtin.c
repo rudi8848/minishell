@@ -129,6 +129,7 @@ int		ft_setenv(char **args, char **envp)
 	char **new_envp;
 	int		size;
 	int i = 0;
+	char *str;
 
 	printf("%s, %s, %s\n", args[0], args[1], args[2]);
 	if (args[3] != NULL || !args[1])
@@ -138,59 +139,58 @@ int		ft_setenv(char **args, char **envp)
 	}
 	else
 	{
+		str = ft_strjoin(args[1], "=");
+			if (args[2])
+		str = ft_strjoin(str, args[2]);
+		printf("%s\n", str);
+
 		while (envp[i])
 		{
 			if (ft_strnequ(args[1], envp[i], strlen(args[1])))
 			{
+				printf("find in list\n");
 				free(envp[i]);
-				if (!args[2])
-					envp[i] = ft_strdup(args[1]);
-				else
-				{
-					var = ft_strjoin(args[1], "=");
-					envp[i] = ft_strjoin(var, args[2]);
-					free(var);
-					return (0);
-				}
+				envp[i] = ft_strdup(str);
+				free(str);
+				return (0);
 			}
 			i++;
 		}
-i = 0;
-		/*
-		if ((var = get_orig_env(args[1], envp)) != NULL)
+
+		printf("NO %s\n", str);
+		size = env_size(envp);
+		new_envp = (char**)ft_memalloc(sizeof(char) * (size + 2));
+		if (!new_envp)
 		{
-			var = ft_strjoin(args[1], args[2]);
-			printf("%s\n", var);
-		}*/
-		//else
-		//{
-			size = env_size(envp);
-			new_envp = (char**)ft_memalloc(sizeof(char) * (size + 2));
-			if (!new_envp)
-			{
-				ft_printf("Cannot allocate memory\n");
-				return (0);
-			}
-			var = ft_strjoin(args[1], "=");
-			while (i < size)
-			{
-				new_envp[i] = envp[i];
-				i++;
-			}
-		
-			
-	printf("after loop, argv[1]: %s\n", args[1]);
-		if (args[2])
-		{
-			new_envp[size] = ft_strjoin(var, args[2]);
-			free(var);
+			ft_printf("Cannot allocate memory\n");
+			return (0);
 		}
-		else
-			new_envp[size] = args[1];
-		new_envp[size +1] = NULL;
+
+		i = 0;
+		while (i < size)
+		{
+			new_envp[i] = ft_strdup(envp[i]);
+			i++;
+		}
+		new_envp[size] = ft_strdup(str);
+		if (new_envp[size] == NULL)
+		{
+			printf("Cannot set env\n");
+			ft_exit(args, envp);
+		}
+		printf("new_envp[size]: [%s]\n", new_envp[size]);
+		new_envp[size + 1] = NULL;
+
 		free_arr(envp);
 		envp = new_envp;
-		//}
+
+		i = 0;
+		while (envp[i])
+		{
+			printf("---> %s\n", envp[i]);
+			i++;
+		}
+
 	}
 	return 0;
 }
