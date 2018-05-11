@@ -132,7 +132,7 @@ int		ft_setenv(char **args, char ***envp)
 	char *str;
 	int len;
 
-	printf("args 0, 1, 2: %s, %s, %s\n", args[0], args[1], args[2]);
+	//printf("args 0, 1, 2: %s, %s, %s\n", args[0], args[1], args[2]);
 	if (args[3] != NULL || !args[1])
 	{
 		ft_printf("setenv: Wrong number of arguments\n");
@@ -183,18 +183,10 @@ int		ft_setenv(char **args, char ***envp)
 		new_envp[size + 1] = NULL;
 
 		free_arr(*envp);
-		printf("free\n");
-		//free(*envp);
+
 		*envp = new_envp;
 		printf("%p\n", *envp);
-/*
-		i = 0;
-		while (*envp[i])
-		{
-			printf("---> %s\n", *envp[i]);
-			i++;
-		}
-*/
+
 	}
 	return 0;
 }
@@ -202,7 +194,44 @@ int		ft_setenv(char **args, char ***envp)
 int		ft_unsetenv(char **args, char ***envp)
 {
 	printf("%s\n", __FUNCTION__);
-	return 0;
+	int i;
+	int	len;
+	int	find;
+
+	find = 0;
+
+	if (args[1])
+	{
+		len = ft_strlen(args[1]);
+		i = 0;
+		while (*(*envp + i) != NULL || *(*envp + i + 1) != NULL)
+		{
+			printf("[%d] %s / %s\n", i, args[1], *(*envp + i));
+			if (ft_strnequ(args[1], *(*envp +i), len))
+				{
+					printf("find in list\n");
+					find = 1;
+					break;
+				}
+			i++;
+		}
+	if (find)
+	{
+		while (*(*envp + i) != NULL/* || *(*envp + i + 1) != NULL*/)
+		{
+			printf("[%d] / %s\n", i, *(*envp + i));
+			if (*(*envp + i) != NULL)
+				free(*(*envp + i));
+			if (! *(*envp + i + 1))
+				*(*envp + i) = NULL;
+			else
+				*(*envp + i) = *(*envp + i + 1);
+			i++;
+		}
+		//*(*envp +i) = NULL;
+	}
+}
+		return 0;
 }
 
 int		env_size(char **envp)
