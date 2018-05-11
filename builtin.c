@@ -225,7 +225,7 @@ int		ft_unsetenv(char **args, char ***envp)
 			if (! *(*envp + i + 1))
 				*(*envp + i) = NULL;
 			else
-				*(*envp + i) = *(*envp + i + 1);
+				*(*envp + i) = ft_strdup(*(*envp + i + 1));
 			i++;
 		}
 		//*(*envp +i) = NULL;
