@@ -97,6 +97,7 @@ int	ft_cd(char **args, char ***envp)
 	arr[1] = "OLDPWD";
 	printf("%s OLDPWD %s\n", __FUNCTION__, old);
 	arr[2] = old;
+	ft_unsetenv(arr, envp);
 	ft_setenv(arr, envp);
 	}	
 	else
@@ -142,7 +143,12 @@ int		ft_setenv(char **args, char ***envp)
 	{
 		str = ft_strjoin(args[1], "=");
 			if (args[2])
-		str = ft_strjoin(str, args[2]);
+		{
+			var = ft_strjoin(str, args[2]);
+			free(str);
+			str = ft_strdup(var);
+			free(var);
+		}
 		printf("%s\n", str);
 		len = ft_strlen(args[1]);
 		size = env_size(*envp);
@@ -174,6 +180,7 @@ int		ft_setenv(char **args, char ***envp)
 			i++;
 		}
 		new_envp[size] = ft_strdup(str);
+		free(str);
 		if (new_envp[size] == NULL)
 		{
 			printf("Cannot set env\n");
