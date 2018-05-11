@@ -2,7 +2,7 @@
 
 int		ft_echo(char **args, char ***envp)
 {
-	printf("%s\n", __FUNCTION__);
+	//printf("%s\n", __FUNCTION__);
 	int i = 1;
 	int j;
 	char *ptr;
@@ -86,7 +86,7 @@ int	ft_cd(char **args, char ***envp)
 	free(new);
 	if (ret == OK)
 	{
-		new = get_current_wd();
+		new = ft_strdup(get_current_wd());
 		printf("--> new: %s\n", new);
 	arr[0] = "setenv";
 	arr[1] = "PWD";
@@ -100,15 +100,17 @@ int	ft_cd(char **args, char ***envp)
 	arr[2] = old;
 	ft_unsetenv(arr, envp);
 	ft_setenv(arr, envp);
-	free(old);
+	free(new);
 //	free(new);
 	}	
 	else
 		printf("cd error\n");
-	//free(new);				doesn't want delete
+	free(old);
+	//		doesn't want delete
 	return ret;
 }
 
+/*
 char	*get_orig_env(char *name, char **envp)
 {
 	int i = 0;
@@ -125,6 +127,7 @@ char	*get_orig_env(char *name, char **envp)
 	}
 	return (NULL);
 }
+*/
 
 int		ft_setenv(char **args, char ***envp)
 {
@@ -216,7 +219,7 @@ int		ft_unsetenv(char **args, char ***envp)
 		i = 0;
 		while (*(*envp + i) != NULL || *(*envp + i + 1) != NULL)
 		{
-			printf("[%d] %s / %s\n", i, args[1], *(*envp + i));
+		//	printf("[%d] %s / %s\n", i, args[1], *(*envp + i));
 			if (ft_strnequ(args[1], *(*envp +i), len))
 				{
 					printf("find in list\n");
@@ -229,7 +232,7 @@ int		ft_unsetenv(char **args, char ***envp)
 	{
 		while (*(*envp + i) != NULL/* || *(*envp + i + 1) != NULL*/)
 		{
-			printf("[%d] / %s\n", i, *(*envp + i));
+		//	printf("[%d] / %s\n", i, *(*envp + i));
 			if (*(*envp + i) != NULL)
 				free(*(*envp + i));
 			if (! *(*envp + i + 1))
@@ -253,7 +256,7 @@ int		env_size(char **envp)
 }
 int		ft_env(char **args, char ***envp)
 {
-	printf("---> %s, %p\n", __FUNCTION__, *envp);
+	//printf("---> %s, %p\n", __FUNCTION__, *envp);
 	int i = 0;
 	while (*(*envp +i) != NULL)
 	{

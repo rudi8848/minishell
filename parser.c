@@ -27,16 +27,26 @@ char	*get_copy_env(char *needle, char **envp)
 
 void	free_arr(char **array)
 {
-	printf("---> %s\n", __FUNCTION__);
+	printf("---> %s: %p\n", __FUNCTION__, array);
 	int	i = 0;
 
 	while (array[i] != NULL)
 	{
-		printf("---> array[%d]", i);
+		printf("---> all args[%d]: %p, [%.4s]", i, &array[i], array[i]);
+	//	printf("%s\n", array[i]);
+	//	free(array[i]);
+		i++;
+	}
+
+	i = 0;
+	while (array[i] != NULL)
+	{
+		printf("---> array[%d]: %p", i, &array[i]);
 	//	printf("%s\n", array[i]);
 		free(array[i]);
 		i++;
 	}
+	printf("\ndone\n");
 	free(array);
 	array = NULL;
 
@@ -44,7 +54,7 @@ void	free_arr(char **array)
 
 int		ft_find(t_cmd_list *commands, char **envp)
 {
-	printf("---> %s, %s\n", __FUNCTION__, commands->args[0]);
+	//printf("---> %s, %s\n", __FUNCTION__, commands->args[0]);
 	int	find;
 	char	**path_arr;
 	char	*env_path;
@@ -52,7 +62,7 @@ int		ft_find(t_cmd_list *commands, char **envp)
 	int	i = 0;
 	if (!commands->args[0])
 		return (0);
-	if ((find = access(commands->args[0], F_OK)) != 0)
+	if ((find = access(commands->args[0], X_OK)) != OK)
 	{
 		env_path = get_copy_env("PATH", envp);
 		path_arr = ft_strsplit(env_path, ':');	
@@ -60,10 +70,12 @@ int		ft_find(t_cmd_list *commands, char **envp)
 		{
 			tmp = ft_strjoin(path_arr[i], "/");
 			find = access(ft_strcat(tmp, commands->args[0]), X_OK);
-			if (find == 0)
+			if (find == OK)
 			{
+	//-----------------------------------------------
 				free(commands->args[0]);
-				commands->args[0] = ft_strdup(tmp);
+				(*commands).args[0] = ft_strdup(tmp);
+	//-----------------------------------------------
 				free_arr(path_arr);
 				free(tmp);
 				return (1);
@@ -133,7 +145,7 @@ int		ft_valid_str(char *str)
 
 t_cmd_list		*parser(char *line)
 {
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 	t_cmd_list	*commands = NULL;
 	char		*ptr;
 	char		**args;
@@ -168,6 +180,8 @@ t_cmd_list		*parser(char *line)
 		else
 		{
 			args = ft_strsplit(line, ' ');
+			if (!args)
+				return (NULL);
 			push(&commands, args);
 		}
 	}

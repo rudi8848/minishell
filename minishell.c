@@ -5,7 +5,7 @@
 
 void	type_prompt(char **envp)
 {
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 	char	*user;
 	char	*pwd;
 	char	*home;
@@ -38,7 +38,7 @@ void	type_prompt(char **envp)
 
 int	check_built(char *cmd)
 {
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 	int i = 0;
 	char *built[] = {"echo", "cd", "setenv", "unsetenv", "env", "exit", NULL};
 	while (built[i])
@@ -103,15 +103,16 @@ void ft_cmd_exe(char **args, char **envp)
 
 void	ft_list_del(t_cmd_list **commands)
 {
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 	t_cmd_list *prev;
 
 	while (*commands)
 	{
 		prev = (*commands);
 		(*commands) = (*commands)->next;
+		printf("---> %s: %p\n", __FUNCTION__, prev->args);
 		free_arr(prev->args);
-		//ft_strdel(prev->args);
+	
 		free(prev);
 	}
 	//free(*commands);
@@ -119,14 +120,14 @@ void	ft_list_del(t_cmd_list **commands)
 
 void	executor(t_cmd_list *commands, char ***envp)
 {
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 	int ret;
 	t_cmd_list *tmp;
 
 	tmp = commands;
 	while (commands)
 	{
-		//--------------------
+		/*//--------------------
 		int i = 0;
 		while (commands->args[i])
 		{
@@ -134,13 +135,14 @@ void	executor(t_cmd_list *commands, char ***envp)
 			i++;
 		}
 		//-------------------
+		*/
 		ret = check_built(commands->args[0]);
 		if (ret >= 0)
 			ft_built_exe(commands->args, envp, ret);
 		else
 		{
 			ret = ft_find(commands, *envp);
-	printf("---> %s\n", __FUNCTION__);
+	//printf("---> %s\n", __FUNCTION__);
 			if (ret)
 				ft_cmd_exe(commands->args, *envp);
 		}
@@ -151,7 +153,7 @@ void	executor(t_cmd_list *commands, char ***envp)
 
 char	**copy_env(void)
 {
-	printf(">>>>>>>>> %s <<<<<<<<<<\n", __FUNCTION__);
+	//printf(">>>>>>>>> %s <<<<<<<<<<\n", __FUNCTION__);
 	extern char **environ;
 	int size;
 	char	**copy;
@@ -194,7 +196,6 @@ int	main(void)
 		free(line);
 	if (commands)
 		executor(commands, &envp);
-	printf("---> %s, *envp %p\n", __FUNCTION__, envp);
 	if (!ret)
 		ft_printf("\n");
 }
