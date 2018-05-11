@@ -184,8 +184,9 @@ int		ft_setenv(char **args, char ***envp)
 
 		free_arr(*envp);
 		printf("free\n");
-		free(*envp);
-		envp = &new_envp;
+		//free(*envp);
+		*envp = new_envp;
+		printf("%p\n", *envp);
 /*
 		i = 0;
 		while (*envp[i])
@@ -213,7 +214,7 @@ int		env_size(char **envp)
 }
 int		ft_env(char **args, char ***envp)
 {
-	printf("---> %s\n", __FUNCTION__);
+	printf("---> %s, %p\n", __FUNCTION__, *envp);
 	int i = 0;
 	while (*(*envp +i) != NULL)
 	{

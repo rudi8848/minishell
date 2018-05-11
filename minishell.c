@@ -194,6 +194,7 @@ int	main(void)
 		free(line);
 	if (commands)
 		executor(commands, &envp);
+	printf("---> %s, *envp %p\n", __FUNCTION__, envp);
 	if (!ret)
 		ft_printf("\n");
 }
