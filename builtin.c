@@ -52,11 +52,11 @@ char	*ft_path_substitute(char *path, char **envp)
 	tmp = NULL;
 	if (!path || path[0] == '~')
 	{
-		tmp = get_copy_env("HOME", envp);
+		tmp = ft_strdup(get_copy_env("HOME", envp));
 		if (!path || !path[1])
 			return (tmp);
 		dest = ft_strjoin(tmp, path + 1);
-		//free(path);
+		free(tmp);
 	}
 	return (dest);
 }
@@ -79,11 +79,11 @@ int	ft_cd(char **args, char ***envp)
 	else if (! args[1] || args[1][0] == '~')
 		new = ft_path_substitute(args[1], *envp);
 	else
-		new = args[1];
+		new = ft_strdup(args[1]);
 	old = ft_strdup(get_current_wd());
 	ret = chdir(new);
 
-//	free(new);
+	free(new);
 	if (ret == OK)
 	{
 		new = get_current_wd();
@@ -92,6 +92,7 @@ int	ft_cd(char **args, char ***envp)
 	arr[1] = "PWD";
 	arr[2] = new;
 	arr[3] = NULL;
+		ft_unsetenv(arr, envp);
 		ft_setenv(arr, envp);
 	//	free(ptr);
 	arr[1] = "OLDPWD";
@@ -99,6 +100,8 @@ int	ft_cd(char **args, char ***envp)
 	arr[2] = old;
 	ft_unsetenv(arr, envp);
 	ft_setenv(arr, envp);
+	free(old);
+//	free(new);
 	}	
 	else
 		printf("cd error\n");
