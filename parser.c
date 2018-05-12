@@ -1,29 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gvynogra <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/12 15:06:04 by gvynogra          #+#    #+#             */
+/*   Updated: 2018/05/12 15:06:06 by gvynogra         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-char	*get_copy_env(char *needle, char **envp)
-{
-//	printf("---> %s\n", __FUNCTION__);
-	char	*res = NULL;
-	size_t	len;
-	int		i = 0;
-
-	len = ft_strlen(needle);
-	while (envp[i] != NULL)
-	{
-		if (ft_strnequ(needle, envp[i], len) && envp[i][len] == '=')
-		{
-			res = envp[i] + (len + 1);
-			return (res);
-		}
-		i++;
-	}
-	if (!res)
-	{
-		ft_printf("Environement element %s not found\n", needle);
-		return(0);
-	}
-	return (res);
-}
 
 void	free_arr(char **array)
 {
@@ -43,7 +30,6 @@ void	free_arr(char **array)
 
 int		ft_find(t_cmd_list *commands, char **envp)
 {
-	//printf("---> %s, %s\n", __FUNCTION__, commands->args[0]);
 	int	find;
 	char	**path_arr;
 	char	*env_path;
@@ -56,6 +42,8 @@ int		ft_find(t_cmd_list *commands, char **envp)
 	if ((find = access(commands->args[0], X_OK)) != OK)
 	{
 		env_path = get_copy_env("PATH", envp);
+		if (!env_path)
+			return (0);
 		path_arr = ft_strsplit(env_path, ':');	
 		while (path_arr[i] != NULL)
 		{
@@ -136,7 +124,6 @@ int		ft_valid_str(char *str)
 
 t_cmd_list		*parser(char *line)
 {
-	//printf("---> %s\n", __FUNCTION__);
 	t_cmd_list	*commands = NULL;
 	char		*ptr;
 	char		**args;

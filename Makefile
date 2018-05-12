@@ -1,6 +1,5 @@
 NAME = minishell
-SRCS = minishell.c parser.c builtin.c
-#SRCS = test.c
+SRCS = minishell.c parser.c builtin.c execution.c environement.c
 LIB = libft/libft.a
 OBJ = $(SRCS:.c=.o)
 FLAGS = -Wall -Wextra -Werror -g3

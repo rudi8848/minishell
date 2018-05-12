@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gvynogra <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/12 15:04:59 by gvynogra          #+#    #+#             */
+/*   Updated: 2018/05/12 15:05:01 by gvynogra         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int		ft_echo(char **args, char ***envp)
 {
-	//printf("%s\n", __FUNCTION__);
 	int i = 1;
 	int j;
 	char *ptr;
@@ -33,38 +44,8 @@ int		ft_echo(char **args, char ***envp)
 	return 0;
 }
 
-char	*get_current_wd(void)
-{
-	char	buf[2048 + 1];
-	char	*dest;
-
-	dest = getcwd(buf, 2048);
-	return (dest);
-}
-
-char	*ft_path_substitute(char *path, char **envp)
-{
-//printf("---> %s, %s\n", __FUNCTION__, path);
-	char	*dest;
-	char	*tmp;
-
-	dest = NULL;
-	tmp = NULL;
-	if (!path || path[0] == '~')
-	{
-		tmp = ft_strdup(get_copy_env("HOME", envp));
-		if (!path || !path[1])
-			return (tmp);
-		dest = ft_strjoin(tmp, path + 1);
-		free(tmp);
-	}
-	return (dest);
-}
-
-
 int	ft_cd(char **args, char ***envp)
 {
-//	printf("%s\n", __FUNCTION__);
 	int	ret = 0;
 	int i = 0;
 	char	*new;
@@ -87,51 +68,28 @@ int	ft_cd(char **args, char ***envp)
 	if (ret == OK)
 	{
 		new = ft_strdup(get_current_wd());
-	//	printf("--> new: %s\n", new);
-	arr[0] = "setenv";
-	arr[1] = "PWD";
-	arr[2] = new;
-	arr[3] = NULL;
-		ft_unsetenv(arr, envp);
+		arr[0] = "setenv";
+		arr[1] = "PWD";
+		arr[2] = new;
+		arr[3] = NULL;
+		if (get_copy_env("PWD", *envp))
+			ft_unsetenv(arr, envp);
 		ft_setenv(arr, envp);
-	//	free(ptr);
-	arr[1] = "OLDPWD";
-	//printf("%s OLDPWD %s\n", __FUNCTION__, old);
-	arr[2] = old;
-	ft_unsetenv(arr, envp);
-	ft_setenv(arr, envp);
-	free(new);
-//	free(new);
+		arr[1] = "OLDPWD";
+		arr[2] = old;
+		if (get_copy_env("OLDPWD", *envp))
+			ft_unsetenv(arr, envp);
+		ft_setenv(arr, envp);
+		free(new);
 	}	
 	else
 		printf("cd error\n");
 	free(old);
-	//		doesn't want delete
 	return ret;
 }
 
-/*
-char	*get_orig_env(char *name, char **envp)
-{
-	int i = 0;
-	int len;
-	char *tmp;
-
-	len = ft_strlen(name) + 1;
-	tmp = ft_strcat(name, "=");
-	while (envp[i] != NULL)
-	{
-		if (ft_strnequ(tmp, envp[i], len))
-			return(envp[i]);
-		i++;
-	}
-	return (NULL);
-}
-*/
-
 int		ft_setenv(char **args, char ***envp)
 {
-	//printf("%s \n", __FUNCTION__);
 	char *var;
 	char **new_envp;
 	int		size;
@@ -139,8 +97,7 @@ int		ft_setenv(char **args, char ***envp)
 	char *str;
 	int len;
 
-	//printf("args 0, 1, 2: %s, %s, %s\n", args[0], args[1], args[2]);
-	if (args[3] != NULL || !args[1])
+	if (!args[1] || (args[2] && args[3]))
 	{
 		ft_printf("setenv: Wrong number of arguments\n");
 		return (0);
@@ -155,14 +112,12 @@ int		ft_setenv(char **args, char ***envp)
 			str = ft_strdup(var);
 			free(var);
 		}
-		printf("%s\n", str);
 		len = ft_strlen(args[1]);
 		size = env_size(*envp);
 		while (i < size)
 		{
 			if (ft_strnequ(args[1], *(*envp +i), len))
 			{
-				//printf("find in list\n");
 				free(*(*envp +i));
 				*(*envp +i) = ft_strdup(str);
 				free(str);
@@ -170,15 +125,12 @@ int		ft_setenv(char **args, char ***envp)
 			}
 			i++;
 		}
-
-		//printf("NOT FOUND, str is:  %s\n", str);
 		new_envp = (char**)ft_memalloc(sizeof(char*) * (size + 2));
 		if (!new_envp)
 		{
 			ft_printf("Cannot allocate memory\n");
 			return (0);
 		}
-
 		i = 0;
 		while (i < size)
 		{
@@ -192,21 +144,15 @@ int		ft_setenv(char **args, char ***envp)
 			printf("Cannot set env\n");
 			ft_exit(args, envp);
 		}
-		//printf("new_envp[size]: [%s]\n", new_envp[size]);
 		new_envp[size + 1] = NULL;
-
 		free_arr(*envp);
-
 		*envp = new_envp;
-		printf("%p\n", *envp);
-
 	}
 	return 0;
 }
 
 int		ft_unsetenv(char **args, char ***envp)
 {
-	//printf("%s\n", __FUNCTION__);
 	int i;
 	int	len;
 	int	find;
@@ -216,13 +162,16 @@ int		ft_unsetenv(char **args, char ***envp)
 	if (args[1])
 	{
 		len = ft_strlen(args[1]);
+		if (ft_strnequ(args[1], "HOME", len) || ft_strnequ(args[1], "LOGNAME", len))
+		{
+			ft_printf("Cannot unset: premission denied\n");
+			return (0);
+		}
 		i = 0;
 		while (*(*envp + i) != NULL || *(*envp + i + 1) != NULL)
 		{
-		//	printf("[%d] %s / %s\n", i, args[1], *(*envp + i));
 			if (ft_strnequ(args[1], *(*envp +i), len))
 				{
-					//printf("find in list\n");
 					find = 1;
 					break;
 				}
@@ -230,9 +179,8 @@ int		ft_unsetenv(char **args, char ***envp)
 		}
 	if (find)
 	{
-		while (*(*envp + i) != NULL/* || *(*envp + i + 1) != NULL*/)
+		while (*(*envp + i) != NULL)
 		{
-		//	printf("[%d] / %s\n", i, *(*envp + i));
 			if (*(*envp + i) != NULL)
 				free(*(*envp + i));
 			if (! *(*envp + i + 1))
@@ -241,22 +189,13 @@ int		ft_unsetenv(char **args, char ***envp)
 				*(*envp + i) = ft_strdup(*(*envp + i + 1));
 			i++;
 		}
-		//*(*envp +i) = NULL;
 	}
 }
-		return 0;
+	return 0;
 }
 
-int		env_size(char **envp)
-{
-	int i = 0;
-	while (envp[i] != NULL)
-		i++;
-	return (i);
-}
 int		ft_env(char **args, char ***envp)
 {
-	//printf("---> %s, %p\n", __FUNCTION__, *envp);
 	int i = 0;
 	while (*(*envp +i) != NULL)
 	{
@@ -264,12 +203,4 @@ int		ft_env(char **args, char ***envp)
 		i++;
 	}
 	return (0);
-}
-
-int		ft_exit(char **args, char ***envp)
-{
-	free_arr(*envp);
-	printf("%s\n", __FUNCTION__);
-	exit(0);
-	return 0;
 }

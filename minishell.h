@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gvynogra <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/12 15:05:53 by gvynogra          #+#    #+#             */
+/*   Updated: 2018/05/12 15:05:56 by gvynogra         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -50,4 +62,6 @@ int		ft_exit(char **args, char ***envp);
 int		env_size(char **envp);
 char	*get_current_wd(void);
 void    free_arr(char **array);
+void	executor(t_cmd_list *commands, char ***envp);
+char	*ft_path_substitute(char *path, char **envp);
 #endif

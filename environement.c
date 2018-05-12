@@ -1,0 +1,73 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   environement.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gvynogra <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/12 15:05:12 by gvynogra          #+#    #+#             */
+/*   Updated: 2018/05/12 15:05:15 by gvynogra         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+char	*get_copy_env(char *needle, char **envp)
+{
+	char	*res = NULL;
+	size_t	len;
+	int		i = 0;
+
+	len = ft_strlen(needle);
+	while (envp[i] != NULL)
+	{
+		if (ft_strnequ(needle, envp[i], len) && envp[i][len] == '=')
+		{
+			res = envp[i] + (len + 1);
+			return (res);
+		}
+		i++;
+	}
+	if (!res)
+	{
+		ft_printf("Environement element %s not found\n", needle);
+		return(NULL);
+	}
+	return (res);
+}
+
+int		env_size(char **envp)
+{
+	int i = 0;
+	while (envp[i] != NULL)
+		i++;
+	return (i);
+}
+
+char	*get_current_wd(void)
+{
+	char	buf[2048 + 1];
+	char	*dest;
+
+	dest = getcwd(buf, 2048);
+	return (dest);
+}
+
+char	*ft_path_substitute(char *path, char **envp)
+{
+	char	*dest;
+	char	*tmp;
+
+	dest = NULL;
+	tmp = NULL;
+	if (!path || path[0] == '~')
+	{
+		tmp = ft_strdup(get_copy_env("HOME", envp));
+		if (!path || !path[1])
+			return (tmp);
+		dest = ft_strjoin(tmp, path + 1);
+		free(tmp);
+	}
+	return (dest);
+}
+
