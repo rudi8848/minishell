@@ -110,7 +110,7 @@ void	ft_list_del(t_cmd_list **commands)
 	{
 		prev = (*commands);
 		(*commands) = (*commands)->next;
-		printf("---> %s: %p\n", __FUNCTION__, prev->args);
+	
 		free_arr(prev->args);
 	
 		free(prev);

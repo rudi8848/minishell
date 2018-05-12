@@ -87,7 +87,7 @@ int	ft_cd(char **args, char ***envp)
 	if (ret == OK)
 	{
 		new = ft_strdup(get_current_wd());
-		printf("--> new: %s\n", new);
+	//	printf("--> new: %s\n", new);
 	arr[0] = "setenv";
 	arr[1] = "PWD";
 	arr[2] = new;
@@ -96,7 +96,7 @@ int	ft_cd(char **args, char ***envp)
 		ft_setenv(arr, envp);
 	//	free(ptr);
 	arr[1] = "OLDPWD";
-	printf("%s OLDPWD %s\n", __FUNCTION__, old);
+	//printf("%s OLDPWD %s\n", __FUNCTION__, old);
 	arr[2] = old;
 	ft_unsetenv(arr, envp);
 	ft_setenv(arr, envp);
@@ -131,7 +131,7 @@ char	*get_orig_env(char *name, char **envp)
 
 int		ft_setenv(char **args, char ***envp)
 {
-	printf("%s \n", __FUNCTION__);
+	//printf("%s \n", __FUNCTION__);
 	char *var;
 	char **new_envp;
 	int		size;
@@ -162,7 +162,7 @@ int		ft_setenv(char **args, char ***envp)
 		{
 			if (ft_strnequ(args[1], *(*envp +i), len))
 			{
-				printf("find in list\n");
+				//printf("find in list\n");
 				free(*(*envp +i));
 				*(*envp +i) = ft_strdup(str);
 				free(str);
@@ -171,7 +171,7 @@ int		ft_setenv(char **args, char ***envp)
 			i++;
 		}
 
-		printf("NOT FOUND, str is:  %s\n", str);
+		//printf("NOT FOUND, str is:  %s\n", str);
 		new_envp = (char**)ft_memalloc(sizeof(char*) * (size + 2));
 		if (!new_envp)
 		{
@@ -192,7 +192,7 @@ int		ft_setenv(char **args, char ***envp)
 			printf("Cannot set env\n");
 			ft_exit(args, envp);
 		}
-		printf("new_envp[size]: [%s]\n", new_envp[size]);
+		//printf("new_envp[size]: [%s]\n", new_envp[size]);
 		new_envp[size + 1] = NULL;
 
 		free_arr(*envp);
@@ -206,7 +206,7 @@ int		ft_setenv(char **args, char ***envp)
 
 int		ft_unsetenv(char **args, char ***envp)
 {
-	printf("%s\n", __FUNCTION__);
+	//printf("%s\n", __FUNCTION__);
 	int i;
 	int	len;
 	int	find;
@@ -222,7 +222,7 @@ int		ft_unsetenv(char **args, char ***envp)
 		//	printf("[%d] %s / %s\n", i, args[1], *(*envp + i));
 			if (ft_strnequ(args[1], *(*envp +i), len))
 				{
-					printf("find in list\n");
+					//printf("find in list\n");
 					find = 1;
 					break;
 				}
