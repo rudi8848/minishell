@@ -17,7 +17,7 @@ void	type_prompt(char **envp)
 	char	*user;
 	char	*pwd;
 	char	*home;
-	int	len;
+	int		len;
 	char	*tmp;
 
 	user = get_copy_env("LOGNAME", envp);
@@ -34,17 +34,17 @@ void	type_prompt(char **envp)
 		home = "";
 		tmp = pwd;
 	}
-		ft_printf("%s%s: %s%s%s>%s ", RED,user, GREEN, home, tmp, RESET);
-		if (tmp != pwd)
-			ft_strdel(&tmp);
+	ft_printf("%s%s: %s%s%s>%s ", RED, user, GREEN, home, tmp, RESET);
+	if (tmp != pwd)
+		ft_strdel(&tmp);
 }
 
 char	**copy_env(void)
 {
-	extern char **environ;
-	int size;
-	char	**copy;
-	int	i;
+	extern char		**environ;
+	int				size;
+	char			**copy;
+	int				i;
 
 	i = 0;
 	size = env_size(environ);
@@ -69,29 +69,29 @@ int		ft_exit(char **args, char ***envp)
 {
 	free_arr(*envp);
 	exit(0);
-	return 0;
+	return (0);
 }
 
-int	main(void)
+int		main(void)
 {
-	char *line;
-	int ret = 1;
-	t_cmd_list *commands;
-	char **envp;
+	char		*line;
+	int			ret;
+	t_cmd_list	*commands;
+	char		**envp;
 
+	ret = 1;
 	ft_printf("%s", CLEAR);
 	envp = copy_env();
-	
 	while (1)
 	{
 		type_prompt(envp);
 		ret = get_next_line(1, &line);
 		commands = parser(line);
 		free(line);
-	if (commands)
-		executor(commands, &envp);
-	if (!ret)
-		ft_printf("\n");
-}
+		if (commands)
+			executor(commands, &envp);
+		if (!ret)
+			ft_printf("\n");
+	}
 	return (0);
 }

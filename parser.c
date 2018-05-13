@@ -12,31 +12,41 @@
 
 #include "minishell.h"
 
-void	free_arr(char **array)
+int			ft_path_fitting(t_cmd_list *cmd, char **envp, char **p_arr, int f)
 {
-	int	i;
-
-	i = 0;
-	while (array[i] != NULL)
-	{
-		free(array[i]);
-		i++;
-	}
-
-	free(array);
-	array = NULL;
-
-}
-
-int		ft_find(t_cmd_list *commands, char **envp)
-{
-	int	find;
-	char	**path_arr;
-	char	*env_path;
 	char	*tmp;
 	char	*tmp1;
+	int		i;
 
-	int	i = 0;
+	i = 0;
+	while (p_arr[i] != NULL)
+	{
+		tmp1 = ft_strjoin(p_arr[i], "/");
+		tmp = ft_strjoin(tmp1, cmd->args[0]);
+		free(tmp1);
+		f = access(tmp, X_OK);
+		if (f == OK)
+		{
+			free(cmd->args[0]);
+			cmd->args[0] = ft_strdup(tmp);
+			free_arr(p_arr);
+			free(tmp);
+			return (1);
+		}
+		if (tmp)
+			free(tmp);
+		i++;
+	}
+	free_arr(p_arr);
+	return (0);
+}
+
+int			ft_find(t_cmd_list *commands, char **envp)
+{
+	char	**path_arr;
+	int		find;
+	char	*env_path;
+
 	if (!commands->args[0])
 		return (0);
 	if ((find = access(commands->args[0], X_OK)) != OK)
@@ -44,69 +54,19 @@ int		ft_find(t_cmd_list *commands, char **envp)
 		env_path = get_copy_env("PATH", envp);
 		if (!env_path)
 			return (0);
-		path_arr = ft_strsplit(env_path, ':');	
-		while (path_arr[i] != NULL)
+		path_arr = ft_strsplit(env_path, ':');
+		if (!path_arr)
+			return (0);
+		if (!ft_path_fitting(commands, envp, path_arr, find))
 		{
-			tmp1 = ft_strjoin(path_arr[i], "/");
-			tmp = ft_strjoin(tmp1, commands->args[0]);
-			free(tmp1);
-			find = access(tmp, X_OK);
-			if (find == OK)
-			{				
-				free(commands->args[0]);
-				commands->args[0] = ft_strdup(tmp);
-				free_arr(path_arr);
-				free(tmp);
-				return (1);
-			}
-			if (tmp)
-				free(tmp);
-			i++;
+			ft_printf("Command %s: not found\n", commands->args[0]);
+			return (0);
 		}
-		ft_printf("Command %s: not found\n", commands->args[0]);
-		free_arr(path_arr);
-		return (0);
 	}
 	return (1);
 }
 
-t_cmd_list	*get_last(t_cmd_list *head)
-{
-	if (head == NULL)
-	{
-		head = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
-		if (!head)
-			return (NULL);
-		return (head);
-	}
-	while (head->next)
-		head = head->next;
-	return (head);
-}
-
-void	push_back(t_cmd_list *head, char **args)
-{
-	t_cmd_list	*last;
-	t_cmd_list	*tmp;
-
-	last = get_last(head);
-	tmp = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
-	tmp->args = args;
-	tmp->next = NULL;
-	last->next = tmp;
-}
-
-void	push(t_cmd_list **head, char **args)
-{
-	t_cmd_list	*tmp;
-
-	tmp = (t_cmd_list*)ft_memalloc(sizeof(t_cmd_list));
-	tmp->args = args;
-	tmp->next = (*head);
-	(*head) = tmp;
-}
-
-int		ft_valid_str(char *str)
+int			ft_valid_str(char *str)
 {
 	int i;
 	int val;
@@ -122,38 +82,46 @@ int		ft_valid_str(char *str)
 	return (val);
 }
 
-t_cmd_list		*parser(char *line)
+void		ft_split_cmd(t_cmd_list **commands, char *ptr, char *line)
 {
-	t_cmd_list	*commands = NULL;
+	char		*tmp;
+	int			i;
+	char		**args;
+
+	i = 0;
+	while (line[i] != ';')
+		i++;
+	ptr = ft_strsub(line, 0, i);
+	args = ft_strsplit(ptr, ' ');
+	free(ptr);
+	push(commands, args);
+	ptr = line;
+	while (*ptr && ptr != NULL)
+	{
+		i = 0;
+		ptr = ft_strchr(ptr, ';') + 1;
+		while (ptr[i] && ptr[i] != ';')
+			i++;
+		tmp = ft_strsub(ptr, 0, i);
+		args = ft_strsplit(tmp, ' ');
+		free(tmp);
+		push_back(*commands, args);
+		ptr += i;
+	}
+}
+
+t_cmd_list	*parser(char *line)
+{
+	t_cmd_list	*commands;
 	char		*ptr;
 	char		**args;
-	char		*tmp;
 
+	commands = NULL;
 	if (ft_valid_str(line))
 	{
 		if ((ptr = ft_strchr(line, ';')))
 		{
-			int i = 0;
-			while (line[i] != ';')
-				i++;
-			ptr = ft_strsub(line, 0, i);
-			args = ft_strsplit(ptr, ' ');
-			free(ptr);
-			push(&commands, args);
-			ptr = line;
-			while (*ptr && ptr != NULL)
-			{
-				i = 0;
-
-				ptr = ft_strchr(ptr, ';') + 1;
-				while (ptr[i] && ptr[i] != ';')
-					i++;
-				tmp = ft_strsub(ptr, 0, i);
-				args = ft_strsplit(tmp, ' ');
-			free(tmp);
-				push_back(commands, args);		
-				ptr += i;
-			}
+			ft_split_cmd(&commands, ptr, line);
 		}
 		else
 		{

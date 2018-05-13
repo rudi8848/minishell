@@ -14,10 +14,12 @@
 
 char	*get_copy_env(char *needle, char **envp)
 {
-	char	*res = NULL;
+	char	*res;
 	size_t	len;
-	int		i = 0;
+	int		i;
 
+	res = NULL;
+	i = 0;
 	len = ft_strlen(needle);
 	while (envp[i] != NULL)
 	{
@@ -31,14 +33,16 @@ char	*get_copy_env(char *needle, char **envp)
 	if (!res)
 	{
 		ft_printf("Environement element %s not found\n", needle);
-		return(NULL);
+		return (NULL);
 	}
 	return (res);
 }
 
 int		env_size(char **envp)
 {
-	int i = 0;
+	int i;
+
+	i = 0;
 	while (envp[i] != NULL)
 		i++;
 	return (i);
@@ -71,3 +75,19 @@ char	*ft_path_substitute(char *path, char **envp)
 	return (dest);
 }
 
+void	ft_move_env(char ***envp, int i, int find)
+{
+	if (find)
+	{
+		while (*(*envp + i) != NULL)
+		{
+			if (*(*envp + i) != NULL)
+				free(*(*envp + i));
+			if (!*(*envp + i + 1))
+				*(*envp + i) = NULL;
+			else
+				*(*envp + i) = ft_strdup(*(*envp + i + 1));
+			i++;
+		}
+	}
+}

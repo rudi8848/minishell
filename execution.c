@@ -12,10 +12,19 @@
 
 #include "minishell.h"
 
-int	check_built(char *cmd)
+int		check_built(char *cmd)
 {
-	int i = 0;
-	char *built[] = {"echo", "cd", "setenv", "unsetenv", "env", "exit", NULL};
+	int		i;
+	char	*built[BUILT];
+
+	i = 0;
+	built[ECHO] = "echo";
+	built[CD] = "cd";
+	built[SETENV] = "setenv";
+	built[UNSETENV] = "unsetenv";
+	built[ENV] = "env";
+	built[EXIT] = "exit";
+	built[END] = NULL;
 	while (built[i])
 	{
 		if (ft_strequ(cmd, built[i]))
@@ -35,7 +44,7 @@ void	ft_set_builtins(t_pfb *built_tab)
 	built_tab[EXIT] = &ft_exit;
 }
 
-void ft_built_exe(char **args, char ***envp, t_built cmd)
+void	ft_built_exe(char **args, char ***envp, t_built cmd)
 {
 	static t_pfb	*built_tab = NULL;
 	t_pfb			ft_run;
@@ -46,7 +55,7 @@ void ft_built_exe(char **args, char ***envp, t_built cmd)
 		if (!built_tab)
 		{
 			ft_printf("Error\n");
-			return;
+			return ;
 		}
 		ft_set_builtins(built_tab);
 	}
@@ -54,7 +63,7 @@ void ft_built_exe(char **args, char ***envp, t_built cmd)
 	ft_run(args, envp);
 }
 
-void ft_cmd_exe(char **args, char **envp)
+void	ft_cmd_exe(char **args, char **envp)
 {
 	pid_t	pid;
 	int		status;
@@ -70,31 +79,16 @@ void ft_cmd_exe(char **args, char **envp)
 		status = execve(args[0], args, envp);
 		if (args[0] && status < 0)
 			ft_printf("%s: command not found\n", args[0]);
-		exit (0);
+		exit(0);
 	}
 	else
 		wait(&status);
 }
 
-void	ft_list_del(t_cmd_list **commands)
-{
-	t_cmd_list *prev;
-
-	while (*commands)
-	{
-		prev = (*commands);
-		(*commands) = (*commands)->next;
-	
-		free_arr(prev->args);
-	
-		free(prev);
-	}
-}
-
 void	executor(t_cmd_list *commands, char ***envp)
 {
-	int ret;
-	t_cmd_list *tmp;
+	int			ret;
+	t_cmd_list	*tmp;
 
 	tmp = commands;
 	while (commands)
