@@ -51,7 +51,7 @@ int			ft_find(t_cmd_list *commands, char **envp)
 		return (0);
 	if ((find = access(commands->args[0], X_OK)) != OK)
 	{
-		env_path = get_copy_env("PATH", envp);
+		env_path = get_copy_env("PATH", envp, OK);
 		if (!env_path)
 			return (0);
 		path_arr = ft_strsplit(env_path, ':');

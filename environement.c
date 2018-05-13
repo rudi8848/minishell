@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*get_copy_env(char *needle, char **envp)
+char	*get_copy_env(char *needle, char **envp, int warning)
 {
 	char	*res;
 	size_t	len;
@@ -32,7 +32,8 @@ char	*get_copy_env(char *needle, char **envp)
 	}
 	if (!res)
 	{
-		ft_printf("Environement element %s not found\n", needle);
+		if (!warning)
+			ft_printf("Environement element %s not found\n", needle);
 		return (NULL);
 	}
 	return (res);
@@ -64,10 +65,10 @@ char	*ft_path_substitute(char *path, char **envp)
 
 	dest = NULL;
 	tmp = NULL;
-	if (!path || path[0] == '~')
+	if (!path || path[0] == '~' || ft_strequ(path, "--"))
 	{
-		tmp = ft_strdup(get_copy_env("HOME", envp));
-		if (!path || !path[1])
+		tmp = ft_strdup(get_copy_env("HOME", envp, OK));
+		if (!path || !path[1] || ft_strequ(path, "--"))
 			return (tmp);
 		dest = ft_strjoin(tmp, path + 1);
 		free(tmp);

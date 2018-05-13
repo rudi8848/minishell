@@ -20,9 +20,9 @@ void	type_prompt(char **envp)
 	int		len;
 	char	*tmp;
 
-	user = get_copy_env("LOGNAME", envp);
+	user = get_copy_env("LOGNAME", envp, OK);
 	pwd = get_current_wd();
-	home = get_copy_env("HOME", envp);
+	home = get_copy_env("HOME", envp, OK);
 	len = ft_strlen(home);
 	if (ft_strnequ(home, pwd, len))
 	{
@@ -50,12 +50,15 @@ char	**copy_env(void)
 	size = env_size(environ);
 	if (!size)
 	{
-		ft_printf("Error: cannot allocate memory\n");
+		ft_printf("Error: cannot find environement\n");
 		exit(0);
 	}
 	copy = (char**)ft_memalloc(sizeof(char*) * size + 1);
 	if (!copy)
+	{
+		ft_printf("Error: cannot copy environement\n");
 		exit(0);
+	}
 	while (environ[i])
 	{
 		copy[i] = ft_strdup(environ[i]);

@@ -53,11 +53,18 @@ int		ft_cd(char **args, char ***envp)
 	ptr = NULL;
 	if (ft_strequ(".", args[1]))
 		return (0);
-	else if (!args[1] || args[1][0] == '~')
+	else if (!args[1] || args[1][0] == '~' || ft_strequ(args[1], "--"))
 		new = ft_path_substitute(args[1], *envp);
 	else
 		new = ft_strdup(args[1]);
 	old = ft_strdup(get_current_wd());
+	/*
+	if (args[1][0] == '-')
+	{
+		ptr = new;
+		new = old;
+		old = new;
+	}*/
 	ret = chdir(new);
 	free(new);
 	if (ret == OK)

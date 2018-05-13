@@ -14,7 +14,7 @@
 
 int		ft_check_symb(char *s, int index)
 {
-	if ((s[0] != '$' && s[index] != '\"' &&
+	if ((s[0] != '$' && s[index] != '\"' && s[index] != '\\' &&
 						s[index] != '\'') || (s[index] == '\''
 						&& ft_isalpha(s[index - 1])
 							&& ft_isalpha(s[index + 1])))
@@ -27,7 +27,7 @@ char	*ft_env_var(char *s, char **envp)
 {
 	char *ptr;
 
-	if (!(ptr = get_copy_env(s, envp)))
+	if (!(ptr = get_copy_env(s, envp, MUTE)))
 		ptr = "";
 	return (ptr);
 }
@@ -41,12 +41,12 @@ void	ft_change_env(char *new, char *old, char ***envp)
 	arr[1] = "PWD";
 	arr[2] = new;
 	arr[3] = NULL;
-	if (get_copy_env("PWD", *envp))
+	if (get_copy_env("PWD", *envp, MUTE))
 		ft_unsetenv(arr, envp);
 	ft_setenv(arr, envp);
 	arr[1] = "OLDPWD";
 	arr[2] = old;
-	if (get_copy_env("OLDPWD", *envp))
+	if (get_copy_env("OLDPWD", *envp, MUTE))
 		ft_unsetenv(arr, envp);
 	ft_setenv(arr, envp);
 	free(new);

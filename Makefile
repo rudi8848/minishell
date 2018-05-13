@@ -1,8 +1,20 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: gvynogra <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2018/05/13 13:47:25 by gvynogra          #+#    #+#              #
+#    Updated: 2018/05/13 13:47:27 by gvynogra         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
 SRCS = minishell.c parser.c builtin.c execution.c environement.c built_functions.c list_manage.c
 LIB = libft/libft.a
 OBJ = $(SRCS:.c=.o)
-FLAGS = -Wall -Wextra -Werror -g3
+FLAGS = -Wall -Wextra -Werror
 
 all:	$(NAME)
 

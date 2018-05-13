@@ -30,6 +30,7 @@
 # define GREEN "\033[1;32m"
 # define RED "\033[1;31m"
 # define OK 0
+# define MUTE 1
 
 typedef	int	(*t_pfb) (char**, char***);
 
@@ -52,8 +53,7 @@ typedef struct	s_cmd_list
 
 t_cmd_list		*parser(char *line);
 int				ft_find(t_cmd_list *cmd, char **envp);
-char			*get_copy_env(char *needle, char **envp);
-char			*get_orig_env(char *needle, char **envp);
+char			*get_copy_env(char *needle, char **envp, int warning);
 int				ft_echo(char **args, char ***envp);
 int				ft_cd(char **args, char ***envp);
 int				ft_setenv(char **args, char ***envp);
@@ -67,9 +67,12 @@ void			executor(t_cmd_list *commands, char ***envp);
 char			*ft_path_substitute(char *path, char **envp);
 void			push_back(t_cmd_list *head, char **args);
 void			push(t_cmd_list **head, char **args);
+void			ft_list_del(t_cmd_list **commands);
 void			ft_move_env(char ***envp, int i, int find);
 char			*ft_check_args(char **args);
 void			ft_change_env(char *new, char *old, char ***envp);
 char			*ft_env_var(char *s, char **envp);
-char			*get_copy_env(char *needle, char **envp);
+int				ft_env_rewrite(char *str, char ***envp, int size);
+int				ft_check_symb(char *s, int index);
+
 #endif
