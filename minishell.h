@@ -74,5 +74,7 @@ void			ft_change_env(char *new, char *old, char ***envp);
 char			*ft_env_var(char *s, char **envp);
 int				ft_env_rewrite(char *str, char ***envp, int size);
 int				ft_check_symb(char *s, int index);
+void			ft_cmd_exe(char **args, char **envp);
+int				ft_print_env(char **args, char ***envp);
 
 #endif

@@ -135,6 +135,32 @@ int		ft_unsetenv(char **args, char ***envp)
 
 int		ft_env(char **args, char ***envp)
 {
+	char **envp_cp;
+	char **ptr;
+	t_cmd_list *cmd;
+	
+	cmd = NULL;
+	envp_cp = (char **)ft_memalloc(sizeof(char*) * 2);
+	envp_cp[0] = ft_strjoin("PATH=", get_copy_env("PATH", *envp, MUTE));
+	envp_cp[1] = NULL;
+	if (ft_strequ(args[1], "-i"))
+	{
+		ptr = args + 2;
+	//	printf("%s\n", *ptr);
+		push(&cmd, ptr);
+		if (ptr)
+			executor(cmd, &envp_cp);
+	//	free(envp_cp[0]);
+	//	free(envp_cp);
+		return 0;
+	}
+	else
+		ft_print_env(args, envp);
+
+}
+
+int		ft_print_env(char **args, char ***envp)
+{
 	int i;
 
 	i = 0;
