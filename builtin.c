@@ -55,16 +55,15 @@ int		ft_cd(char **args, char ***envp)
 		return (0);
 	else if (!args[1] || args[1][0] == '~' || ft_strequ(args[1], "--"))
 		new = ft_path_substitute(args[1], *envp);
+	else if (args[1][0] == '-')
+		new = ft_strdup(get_copy_env("OLDPWD", *envp, MUTE));	
 	else
 		new = ft_strdup(args[1]);
 	old = ft_strdup(get_current_wd());
-	/*
-	if (args[1][0] == '-')
-	{
-		ptr = new;
-		new = old;
-		old = new;
-	}*/
+	
+	//else if (args[1][0] == '-')
+	//	new = ft_strdup(get_copy_env("OLDPWD", *envp));	
+
 	ret = chdir(new);
 	free(new);
 	if (ret == OK)
@@ -133,6 +132,28 @@ int		ft_unsetenv(char **args, char ***envp)
 	return (0);
 }
 
+char		**ft_cp_array(char **src)
+{
+	char	**dest;
+	int	i;
+	int	n;
+
+	i = 0;
+	n = 0;
+	while (src[n] != NULL)
+		n++;
+	dest = (char **)ft_memalloc(sizeof(char *) * (n + 1));
+	if (!dest)
+		return (NULL);
+	while (i < n)
+	{
+		dest[i] = ft_strdup(src[i]);
+		i++;
+	}
+	dest[n] = NULL;
+	return (dest);
+}
+
 int		ft_env(char **args, char ***envp)
 {
 	char **envp_cp;
@@ -145,13 +166,12 @@ int		ft_env(char **args, char ***envp)
 	envp_cp[1] = NULL;
 	if (ft_strequ(args[1], "-i"))
 	{
-		ptr = args + 2;
-	//	printf("%s\n", *ptr);
+		ptr = ft_cp_array(args + 2);
 		push(&cmd, ptr);
 		if (ptr)
 			executor(cmd, &envp_cp);
-	//	free(envp_cp[0]);
-	//	free(envp_cp);
+		free(envp_cp[0]);
+		free(envp_cp);
 		return 0;
 	}
 	else
