@@ -77,6 +77,7 @@ void	ft_cmd_exe(char **args, char **envp)
 	}
 	else if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
 		status = execve(args[0], args, envp);
 		if (args[0] && status < 0)
 			ft_printf("%s: command not found\n", args[0]);

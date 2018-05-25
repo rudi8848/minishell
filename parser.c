@@ -77,6 +77,8 @@ int			ft_valid_str(char *str)
 	{
 		if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n' && str[i] != ';')
 			val++;
+		if (str[i] == '\t')
+			str[i] = ' ';
 		i++;
 	}
 	return (val);

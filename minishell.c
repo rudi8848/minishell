@@ -90,6 +90,7 @@ int		main(void)
 	envp = copy_env();
 	while (1)
 	{
+		signal(SIGINT, SIG_IGN);
 		type_prompt(envp);
 		ret = get_next_line(1, &line);
 		commands = parser(line);
