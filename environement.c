@@ -58,6 +58,27 @@ char	*get_current_wd(void)
 	return (dest);
 }
 
+int				ft_check_dir(char *name)
+{
+	int				ret;
+	struct stat		buf;
+
+	ret = lstat(name, &buf);
+	if (ret >= 0)
+	{
+		if (S_ISDIR(buf.st_mode))
+		/*	ft_read_dir(name, options, head);
+		else
+			ft_read_file(name, options, buf, head);*/
+		return (1);
+	}
+	else
+	{
+		ft_printf("cannot access %s\n", name);
+	}
+	return (0);
+}
+
 char	*ft_path_substitute(char *path, char **envp)
 {
 	char	*dest;

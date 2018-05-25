@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <signal.h>
 # include <sys/types.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # include <sys/time.h>
 # include <sys/resource.h>
@@ -76,5 +77,6 @@ int				ft_env_rewrite(char *str, char ***envp, int size);
 int				ft_check_symb(char *s, int index);
 void			ft_cmd_exe(char **args, char **envp);
 int				ft_print_env(char **args, char ***envp);
+int				ft_check_dir(char *name);
 
 #endif
