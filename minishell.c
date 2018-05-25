@@ -20,15 +20,18 @@ void	type_prompt(char **envp)
 	int		len;
 	char	*tmp;
 
-	user = get_copy_env("LOGNAME", envp, OK);
+	user = get_copy_env("LOGNAME", envp, MUTE);
 	pwd = get_current_wd();
-	home = get_copy_env("HOME", envp, OK);
+	home = get_copy_env("HOME", envp, MUTE);
+	if (home)
+	{
 	len = ft_strlen(home);
 	if (ft_strnequ(home, pwd, len))
 	{
 		home = "~";
 		tmp = ft_strsub(pwd, len, ft_strlen(pwd) - len);
 	}
+}
 	else
 	{
 		home = "";
@@ -48,11 +51,11 @@ char	**copy_env(void)
 
 	i = 0;
 	size = env_size(environ);
-	if (!size)
+	/*if (!size)
 	{
 		ft_printf("Error: cannot find environement\n");
 		exit(0);
-	}
+	}*/
 	copy = (char**)ft_memalloc(sizeof(char*) * size + 1);
 	if (!copy)
 	{

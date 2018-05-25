@@ -113,11 +113,11 @@ int		ft_unsetenv(char **args, char ***envp)
 	if (args[1])
 	{
 		len = ft_strlen(args[1]);
-		if (ft_strnequ(args[1], "HOME", len) ||
+		/*if (ft_strnequ(args[1], "HOME", len) ||
 				ft_strnequ(args[1], "LOGNAME", len))
-			return (ft_printf("Cannot unset: premission denied\n"));
+			return (ft_printf("Cannot unset: premission denied\n"));*/
 		i = 0;
-		while (*(*envp + i) != NULL || *(*envp + i + 1) != NULL)
+		while (*(*envp + i) != NULL && *(*envp + i + 1) != NULL)
 		{
 			if (ft_strnequ(args[1], *(*envp + i), len)
 				&& (*(*envp + i))[len] == '=')
