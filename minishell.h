@@ -21,7 +21,6 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
-# include <sys/time.h>
 # include <sys/resource.h>
 # include <stdlib.h>
 # include <errno.h>
@@ -78,5 +77,7 @@ int				ft_check_symb(char *s, int index);
 void			ft_cmd_exe(char **args, char **envp);
 int				ft_print_env(char **args, char ***envp);
 int				ft_check_dir(char *name);
+char			*ft_set_new_path(char **args, char ***envp);
+char			**ft_cp_array(char **src);
 
 #endif

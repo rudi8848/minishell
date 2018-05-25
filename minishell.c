@@ -49,11 +49,6 @@ char	**copy_env(void)
 
 	i = 0;
 	size = env_size(environ);
-	/*if (!size)
-	{
-		ft_printf("Error: cannot find environement\n");
-		exit(0);
-	}*/
 	copy = (char**)ft_memalloc(sizeof(char*) * size + 1);
 	if (!copy)
 	{

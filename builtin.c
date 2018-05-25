@@ -49,20 +49,10 @@ int		ft_cd(char **args, char ***envp)
 	char	*old;
 
 	i = 0;
-	new = NULL;
 	ptr = NULL;
 	if (ft_strequ(".", args[1]))
 		return (0);
-	else if (!args[1] || args[1][0] == '~' || ft_strequ(args[1], "--"))
-		new = ft_path_substitute(args[1], *envp);
-	else if (args[1][0] == '-')
-	{
-		if (!get_copy_env("OLDPWD", *envp, OK))
-			return (1);
-		new = ft_strdup(get_copy_env("OLDPWD", *envp, MUTE));	
-	}
-	else
-		new = ft_strdup(args[1]);
+	new = ft_set_new_path(args, envp);
 	old = ft_strdup(get_current_wd());
 	ret = chdir(new);
 	free(new);
@@ -113,11 +103,8 @@ int		ft_unsetenv(char **args, char ***envp)
 	if (args[1])
 	{
 		len = ft_strlen(args[1]);
-		/*if (ft_strnequ(args[1], "HOME", len) ||
-				ft_strnequ(args[1], "LOGNAME", len))
-			return (ft_printf("Cannot unset: premission denied\n"));*/
 		i = 0;
-		while (*(*envp + i) != NULL && *(*envp + i + 1) != NULL)
+		while (*(*envp + i) != NULL)
 		{
 			if (ft_strnequ(args[1], *(*envp + i), len)
 				&& (*(*envp + i))[len] == '=')
@@ -132,34 +119,12 @@ int		ft_unsetenv(char **args, char ***envp)
 	return (0);
 }
 
-char		**ft_cp_array(char **src)
-{
-	char	**dest;
-	int	i;
-	int	n;
-
-	i = 0;
-	n = 0;
-	while (src[n] != NULL)
-		n++;
-	dest = (char **)ft_memalloc(sizeof(char *) * (n + 1));
-	if (!dest)
-		return (NULL);
-	while (i < n)
-	{
-		dest[i] = ft_strdup(src[i]);
-		i++;
-	}
-	dest[n] = NULL;
-	return (dest);
-}
-
 int		ft_env(char **args, char ***envp)
 {
-	char **envp_cp;
-	char **ptr;
-	t_cmd_list *cmd;
-	
+	char		**envp_cp;
+	char		**ptr;
+	t_cmd_list	*cmd;
+
 	cmd = NULL;
 	if (ft_strequ(args[1], "-i"))
 	{
@@ -175,18 +140,5 @@ int		ft_env(char **args, char ***envp)
 	}
 	else
 		ft_print_env(args, envp);
-	return (0);
-}
-
-int		ft_print_env(char **args, char ***envp)
-{
-	int i;
-
-	i = 0;
-	while (*(*envp + i) != NULL)
-	{
-		ft_printf("%s\n", *(*envp + i));
-		i++;
-	}
 	return (0);
 }

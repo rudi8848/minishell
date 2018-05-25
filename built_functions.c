@@ -56,15 +56,14 @@ char	*ft_check_args(char **args)
 {
 	char	*var;
 	char	*str;
-	//int		len;
 
 	if (!args[1] || (args[2] && args[3]))
 	{
 		ft_printf("setenv: Wrong number of arguments\n");
 		return (NULL);
 	}
-	//len = ft_strlen(args[1]);
-	if ((ft_strequ(args[1], "HOME") || ft_strequ(args[1], "PWD") || ft_strequ(args[1], "OLDPWD")) && args[2])
+	if ((ft_strequ(args[1], "HOME") || ft_strequ(args[1], "PWD")
+		|| ft_strequ(args[1], "OLDPWD")) && args[2])
 	{
 		if (!ft_check_dir(args[2]))
 			return (NULL);
