@@ -24,14 +24,12 @@ void	type_prompt(char **envp)
 	pwd = get_current_wd();
 	home = get_copy_env("HOME", envp, MUTE);
 	if (home)
-	{
-	len = ft_strlen(home);
+		len = ft_strlen(home);
 	if (ft_strnequ(home, pwd, len))
 	{
 		home = "~";
 		tmp = ft_strsub(pwd, len, ft_strlen(pwd) - len);
 	}
-}
 	else
 	{
 		home = "";
