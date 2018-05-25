@@ -42,6 +42,7 @@ void	ft_set_builtins(t_pfb *built_tab)
 	built_tab[UNSETENV] = &ft_unsetenv;
 	built_tab[ENV] = &ft_env;
 	built_tab[EXIT] = &ft_exit;
+	built_tab[END] = NULL;
 }
 
 void	ft_built_exe(char **args, char ***envp, t_built cmd)

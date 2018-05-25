@@ -67,7 +67,8 @@ char	*ft_path_substitute(char *path, char **envp)
 	tmp = NULL;
 	if (!path || path[0] == '~' || ft_strequ(path, "--"))
 	{
-		tmp = ft_strdup(get_copy_env("HOME", envp, OK));
+		if (get_copy_env("HOME", envp, OK))
+			tmp = ft_strdup(get_copy_env("HOME", envp, MUTE));
 		if (!path || !path[1] || ft_strequ(path, "--"))
 			return (tmp);
 		dest = ft_strjoin(tmp, path + 1);

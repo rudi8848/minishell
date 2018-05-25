@@ -56,20 +56,20 @@ int		ft_cd(char **args, char ***envp)
 	else if (!args[1] || args[1][0] == '~' || ft_strequ(args[1], "--"))
 		new = ft_path_substitute(args[1], *envp);
 	else if (args[1][0] == '-')
+	{
+		if (!get_copy_env("OLDPWD", *envp, OK))
+			return (1);
 		new = ft_strdup(get_copy_env("OLDPWD", *envp, MUTE));	
+	}
 	else
 		new = ft_strdup(args[1]);
 	old = ft_strdup(get_current_wd());
-	
-	//else if (args[1][0] == '-')
-	//	new = ft_strdup(get_copy_env("OLDPWD", *envp));	
-
 	ret = chdir(new);
 	free(new);
 	if (ret == OK)
 		ft_change_env(new, old, envp);
 	else
-		printf("cd error\n");
+		printf("Cannot change directory\n");
 	free(old);
 	return (ret);
 }
@@ -161,22 +161,21 @@ int		ft_env(char **args, char ***envp)
 	t_cmd_list *cmd;
 	
 	cmd = NULL;
-	envp_cp = (char **)ft_memalloc(sizeof(char*) * 2);
-	envp_cp[0] = ft_strjoin("PATH=", get_copy_env("PATH", *envp, MUTE));
-	envp_cp[1] = NULL;
 	if (ft_strequ(args[1], "-i"))
 	{
+		envp_cp = (char **)ft_memalloc(sizeof(char*) * 2);
+		envp_cp[0] = ft_strjoin("PATH=", get_copy_env("PATH", *envp, MUTE));
+		envp_cp[1] = NULL;
 		ptr = ft_cp_array(args + 2);
 		push(&cmd, ptr);
 		if (ptr)
 			executor(cmd, &envp_cp);
 		free(envp_cp[0]);
 		free(envp_cp);
-		return 0;
 	}
 	else
 		ft_print_env(args, envp);
-
+	return (0);
 }
 
 int		ft_print_env(char **args, char ***envp)
