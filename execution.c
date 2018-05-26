@@ -45,7 +45,7 @@ void	ft_set_builtins(t_pfb *built_tab)
 	built_tab[END] = NULL;
 }
 
-void	ft_built_exe(char **args, char ***envp, t_built cmd)
+void	ft_built_exe(char **args, char ***g_envp, t_built cmd)
 {
 	static t_pfb	*built_tab = NULL;
 	t_pfb			ft_run;
@@ -61,10 +61,10 @@ void	ft_built_exe(char **args, char ***envp, t_built cmd)
 		ft_set_builtins(built_tab);
 	}
 	ft_run = built_tab[cmd];
-	ft_run(args, envp);
+	ft_run(args, g_envp);
 }
 
-void	ft_cmd_exe(char **args, char **envp)
+void	ft_cmd_exe(char **args, char **g_envp)
 {
 	pid_t	pid;
 	int		status;
@@ -78,7 +78,7 @@ void	ft_cmd_exe(char **args, char **envp)
 	else if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		status = execve(args[0], args, envp);
+		status = execve(args[0], args, g_envp);
 		if (args[0] && status < 0)
 			ft_printf("%s: command not found\n", args[0]);
 		exit(0);
@@ -87,7 +87,7 @@ void	ft_cmd_exe(char **args, char **envp)
 		wait(&status);
 }
 
-void	executor(t_cmd_list *commands, char ***envp)
+void	executor(t_cmd_list *commands, char ***g_envp)
 {
 	int			ret;
 	t_cmd_list	*tmp;
@@ -97,12 +97,12 @@ void	executor(t_cmd_list *commands, char ***envp)
 	{
 		ret = check_built(commands->args[0]);
 		if (ret >= 0)
-			ft_built_exe(commands->args, envp, ret);
+			ft_built_exe(commands->args, g_envp, ret);
 		else
 		{
-			ret = ft_find(commands, *envp);
+			ret = ft_find(commands, *g_envp);
 			if (ret)
-				ft_cmd_exe(commands->args, *envp);
+				ft_cmd_exe(commands->args, *g_envp);
 		}
 		commands = commands->next;
 	}

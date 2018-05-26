@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int			ft_path_fitting(t_cmd_list *cmd, char **envp, char **p_arr, int f)
+int			ft_path_fitting(t_cmd_list *cmd, char **g_envp, char **p_arr, int f)
 {
 	char	*tmp;
 	char	*tmp1;
@@ -41,7 +41,7 @@ int			ft_path_fitting(t_cmd_list *cmd, char **envp, char **p_arr, int f)
 	return (0);
 }
 
-int			ft_find(t_cmd_list *commands, char **envp)
+int			ft_find(t_cmd_list *commands, char **g_envp)
 {
 	char	**path_arr;
 	int		find;
@@ -51,13 +51,13 @@ int			ft_find(t_cmd_list *commands, char **envp)
 		return (0);
 	if ((find = access(commands->args[0], X_OK)) != OK)
 	{
-		env_path = get_copy_env("PATH", envp, OK);
+		env_path = get_copy_env("PATH", g_envp, OK);
 		if (!env_path)
 			return (0);
 		path_arr = ft_strsplit(env_path, ':');
 		if (!path_arr)
 			return (0);
-		if (!ft_path_fitting(commands, envp, path_arr, find))
+		if (!ft_path_fitting(commands, g_envp, path_arr, find))
 		{
 			ft_printf("Command %s: not found\n", commands->args[0]);
 			return (0);

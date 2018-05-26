@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*get_copy_env(char *needle, char **envp, int warning)
+char	*get_copy_env(char *needle, char **g_envp, int warning)
 {
 	char	*res;
 	size_t	len;
@@ -21,11 +21,11 @@ char	*get_copy_env(char *needle, char **envp, int warning)
 	res = NULL;
 	i = 0;
 	len = ft_strlen(needle);
-	while (envp[i] != NULL)
+	while (g_envp[i] != NULL)
 	{
-		if (ft_strnequ(needle, envp[i], len) && envp[i][len] == '=')
+		if (ft_strnequ(needle, g_envp[i], len) && g_envp[i][len] == '=')
 		{
-			res = envp[i] + (len + 1);
+			res = g_envp[i] + (len + 1);
 			return (res);
 		}
 		i++;
@@ -39,12 +39,12 @@ char	*get_copy_env(char *needle, char **envp, int warning)
 	return (res);
 }
 
-int		env_size(char **envp)
+int		env_size(char **g_envp)
 {
 	int i;
 
 	i = 0;
-	while (envp[i] != NULL)
+	while (g_envp[i] != NULL)
 		i++;
 	return (i);
 }
@@ -58,7 +58,7 @@ char	*get_current_wd(void)
 	return (dest);
 }
 
-char	*ft_path_substitute(char *path, char **envp)
+char	*ft_path_substitute(char *path, char **g_envp)
 {
 	char	*dest;
 	char	*tmp;
@@ -67,8 +67,8 @@ char	*ft_path_substitute(char *path, char **envp)
 	tmp = NULL;
 	if (!path || path[0] == '~' || ft_strequ(path, "--"))
 	{
-		if (get_copy_env("HOME", envp, OK))
-			tmp = ft_strdup(get_copy_env("HOME", envp, MUTE));
+		if (get_copy_env("HOME", g_envp, OK))
+			tmp = ft_strdup(get_copy_env("HOME", g_envp, MUTE));
 		if (!path || !path[1] || ft_strequ(path, "--"))
 			return (tmp);
 		dest = ft_strjoin(tmp, path + 1);
@@ -77,18 +77,18 @@ char	*ft_path_substitute(char *path, char **envp)
 	return (dest);
 }
 
-void	ft_move_env(char ***envp, int i, int find)
+void	ft_move_env(char ***g_envp, int i, int find)
 {
 	if (find)
 	{
-		while (*(*envp + i) != NULL)
+		while (*(*g_envp + i) != NULL)
 		{
-			if (*(*envp + i) != NULL)
-				free(*(*envp + i));
-			if (!*(*envp + i + 1))
-				*(*envp + i) = NULL;
+			if (*(*g_envp + i) != NULL)
+				free(*(*g_envp + i));
+			if (!*(*g_envp + i + 1))
+				*(*g_envp + i) = NULL;
 			else
-				*(*envp + i) = ft_strdup(*(*envp + i + 1));
+				*(*g_envp + i) = ft_strdup(*(*g_envp + i + 1));
 			i++;
 		}
 	}

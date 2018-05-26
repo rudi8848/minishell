@@ -32,7 +32,7 @@
 # define OK 0
 # define MUTE 1
 
-char		**envp;
+char		**g_envp;
 typedef	int	(*t_pfb) (char**, char***);
 
 typedef enum {
@@ -80,5 +80,7 @@ int				ft_print_env(char **args, char ***envp);
 int				ft_check_dir(char *name);
 char			*ft_set_new_path(char **args, char ***envp);
 char			**ft_cp_array(char **src);
+void			main_sig_handler(int signum);
+void			type_prompt(char **g_envp);
 
 #endif

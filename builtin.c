@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int		ft_echo(char **args, char ***envp)
+int		ft_echo(char **args, char ***g_envp)
 {
 	int			i;
 	int			j;
@@ -27,7 +27,7 @@ int		ft_echo(char **args, char ***envp)
 				ft_putchar(args[i][j]);
 			else if (args[i][0] == '$')
 			{
-				ft_printf("%s", ft_env_var(args[i] + 1, *envp));
+				ft_printf("%s", ft_env_var(args[i] + 1, *g_envp));
 				j += ft_strlen(args[i]);
 			}
 			j++;
@@ -40,7 +40,7 @@ int		ft_echo(char **args, char ***envp)
 	return (0);
 }
 
-int		ft_cd(char **args, char ***envp)
+int		ft_cd(char **args, char ***g_envp)
 {
 	int		ret;
 	int		i;
@@ -52,19 +52,19 @@ int		ft_cd(char **args, char ***envp)
 	ptr = NULL;
 	if (ft_strequ(".", args[1]))
 		return (0);
-	new = ft_set_new_path(args, envp);
+	new = ft_set_new_path(args, g_envp);
 	old = ft_strdup(get_current_wd());
 	ret = chdir(new);
 	free(new);
 	if (ret == OK)
-		ft_change_env(new, old, envp);
+		ft_change_env(new, old, g_envp);
 	else
 		printf("Cannot change directory\n");
 	free(old);
 	return (ret);
 }
 
-int		ft_setenv(char **args, char ***envp)
+int		ft_setenv(char **args, char ***g_envp)
 {
 	int		size;
 	int		i;
@@ -74,26 +74,26 @@ int		ft_setenv(char **args, char ***envp)
 	i = 0;
 	if ((str = ft_check_args(args)))
 	{
-		size = env_size(*envp);
+		size = env_size(*g_envp);
 		len = ft_strlen(args[1]);
 		while (i < size)
 		{
-			if (ft_strnequ(args[1], *(*envp + i), len)
-				&& (*(*envp + i))[len] == '=')
+			if (ft_strnequ(args[1], *(*g_envp + i), len)
+				&& (*(*g_envp + i))[len] == '=')
 			{
-				free(*(*envp + i));
-				*(*envp + i) = ft_strdup(str);
+				free(*(*g_envp + i));
+				*(*g_envp + i) = ft_strdup(str);
 				free(str);
 				return (0);
 			}
 			i++;
 		}
-		return (ft_env_rewrite(str, envp, size));
+		return (ft_env_rewrite(str, g_envp, size));
 	}
 	return (0);
 }
 
-int		ft_unsetenv(char **args, char ***envp)
+int		ft_unsetenv(char **args, char ***g_envp)
 {
 	int		i;
 	int		len;
@@ -104,22 +104,22 @@ int		ft_unsetenv(char **args, char ***envp)
 	{
 		len = ft_strlen(args[1]);
 		i = 0;
-		while (*(*envp + i) != NULL)
+		while (*(*g_envp + i) != NULL)
 		{
-			if (ft_strnequ(args[1], *(*envp + i), len)
-				&& (*(*envp + i))[len] == '=')
+			if (ft_strnequ(args[1], *(*g_envp + i), len)
+				&& (*(*g_envp + i))[len] == '=')
 			{
 				find = 1;
 				break ;
 			}
 			i++;
 		}
-		ft_move_env(envp, i, find);
+		ft_move_env(g_envp, i, find);
 	}
 	return (0);
 }
 
-int		ft_env(char **args, char ***envp)
+int		ft_env(char **args, char ***g_envp)
 {
 	char		**envp_cp;
 	char		**ptr;
@@ -129,7 +129,7 @@ int		ft_env(char **args, char ***envp)
 	if (ft_strequ(args[1], "-i"))
 	{
 		envp_cp = (char **)ft_memalloc(sizeof(char*) * 2);
-		envp_cp[0] = ft_strjoin("PATH=", get_copy_env("PATH", *envp, MUTE));
+		envp_cp[0] = ft_strjoin("PATH=", get_copy_env("PATH", *g_envp, MUTE));
 		envp_cp[1] = NULL;
 		ptr = ft_cp_array(args + 2);
 		push(&cmd, ptr);
@@ -139,6 +139,6 @@ int		ft_env(char **args, char ***envp)
 		free(envp_cp);
 	}
 	else
-		ft_print_env(args, envp);
+		ft_print_env(args, g_envp);
 	return (0);
 }

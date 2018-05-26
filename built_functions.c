@@ -23,16 +23,16 @@ int		ft_check_symb(char *s, int index)
 		return (0);
 }
 
-char	*ft_env_var(char *s, char **envp)
+char	*ft_env_var(char *s, char **g_envp)
 {
 	char *ptr;
 
-	if (!(ptr = get_copy_env(s, envp, MUTE)))
+	if (!(ptr = get_copy_env(s, g_envp, MUTE)))
 		ptr = "";
 	return (ptr);
 }
 
-void	ft_change_env(char *new, char *old, char ***envp)
+void	ft_change_env(char *new, char *old, char ***g_envp)
 {
 	char	*arr[4];
 
@@ -41,14 +41,14 @@ void	ft_change_env(char *new, char *old, char ***envp)
 	arr[1] = "PWD";
 	arr[2] = new;
 	arr[3] = NULL;
-	if (get_copy_env("PWD", *envp, MUTE))
-		ft_unsetenv(arr, envp);
-	ft_setenv(arr, envp);
+	if (get_copy_env("PWD", *g_envp, MUTE))
+		ft_unsetenv(arr, g_envp);
+	ft_setenv(arr, g_envp);
 	arr[1] = "OLDPWD";
 	arr[2] = old;
-	if (get_copy_env("OLDPWD", *envp, MUTE))
-		ft_unsetenv(arr, envp);
-	ft_setenv(arr, envp);
+	if (get_copy_env("OLDPWD", *g_envp, MUTE))
+		ft_unsetenv(arr, g_envp);
+	ft_setenv(arr, g_envp);
 	free(new);
 }
 
@@ -79,7 +79,7 @@ char	*ft_check_args(char **args)
 	return (str);
 }
 
-int		ft_env_rewrite(char *str, char ***envp, int size)
+int		ft_env_rewrite(char *str, char ***g_envp, int size)
 {
 	char	**new_envp;
 	int		i;
@@ -90,7 +90,7 @@ int		ft_env_rewrite(char *str, char ***envp, int size)
 		return (ft_printf("Cannot allocate memory\n"));
 	while (i < size)
 	{
-		new_envp[i] = ft_strdup(*(*envp + i));
+		new_envp[i] = ft_strdup(*(*g_envp + i));
 		i++;
 	}
 	new_envp[size] = ft_strdup(str);
@@ -98,7 +98,7 @@ int		ft_env_rewrite(char *str, char ***envp, int size)
 	if (new_envp[size] == NULL)
 		return (printf("Cannot set env\n"));
 	new_envp[size + 1] = NULL;
-	free_arr(*envp);
-	*envp = new_envp;
+	free_arr(*g_envp);
+	*g_envp = new_envp;
 	return (0);
 }

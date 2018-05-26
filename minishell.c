@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-char		**envp;
 
-void	type_prompt(char **envp)
+void	type_prompt(char **g_envp)
 {
 	char	*user;
 	char	*pwd;
@@ -21,9 +20,9 @@ void	type_prompt(char **envp)
 	int		len;
 	char	*tmp;
 
-	user = get_copy_env("LOGNAME", envp, MUTE);
+	user = get_copy_env("LOGNAME", g_envp, MUTE);
 	pwd = get_current_wd();
-	home = get_copy_env("HOME", envp, MUTE);
+	home = get_copy_env("HOME", g_envp, MUTE);
 	if (home)
 		len = ft_strlen(home);
 	if (ft_strnequ(home, pwd, len))
@@ -65,21 +64,12 @@ char	**copy_env(void)
 	return (copy);
 }
 
-int		ft_exit(char **args, char ***envp)
+int		ft_exit(char **args, char ***g_envp)
 {
-	free_arr(*envp);
+	free_arr(*g_envp);
 	ft_printf("---> Program terminated <---\n");
 	exit(0);
 	return (0);
-}
-
-void	main_sig_handler(int signum)
-{
-	if (signum == SIGINT)
-	{
-		ft_printf("\n");
-		type_prompt(envp);
-	}
 }
 
 int		main(void)
@@ -90,15 +80,15 @@ int		main(void)
 
 	ft_printf("%s", CLEAR);
 	signal(SIGINT, main_sig_handler);
-	envp = copy_env();
+	g_envp = copy_env();
 	while (1)
 	{
-		type_prompt(envp);
+		type_prompt(g_envp);
 		ret = get_next_line(1, &line);
 		commands = parser(line);
 		free(line);
 		if (commands)
-			executor(commands, &envp);
+			executor(commands, &g_envp);
 		if (!ret)
 			ft_printf("\n");
 	}
