@@ -25,13 +25,14 @@
 # include <stdlib.h>
 # include <errno.h>
 
-# define CLEAR "\e[1;1H\e[2J"
+# define CLEAR "\033[1;1H\e[2J"
 # define RESET "\033[0m"
 # define GREEN "\033[1;32m"
 # define RED "\033[1;31m"
 # define OK 0
 # define MUTE 1
 
+char		**envp;
 typedef	int	(*t_pfb) (char**, char***);
 
 typedef enum {

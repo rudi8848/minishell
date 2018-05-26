@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+char		**envp;
 
 void	type_prompt(char **envp)
 {
@@ -67,8 +68,18 @@ char	**copy_env(void)
 int		ft_exit(char **args, char ***envp)
 {
 	free_arr(*envp);
+	ft_printf("---> Program terminated <---\n");
 	exit(0);
 	return (0);
+}
+
+void	main_sig_handler(int signum)
+{
+	if (signum == SIGINT)
+	{
+		ft_printf("\n");
+		type_prompt(envp);
+	}
 }
 
 int		main(void)
@@ -76,14 +87,12 @@ int		main(void)
 	char		*line;
 	int			ret;
 	t_cmd_list	*commands;
-	char		**envp;
 
-	ret = 1;
 	ft_printf("%s", CLEAR);
+	signal(SIGINT, main_sig_handler);
 	envp = copy_env();
 	while (1)
 	{
-		signal(SIGINT, SIG_IGN);
 		type_prompt(envp);
 		ret = get_next_line(1, &line);
 		commands = parser(line);
